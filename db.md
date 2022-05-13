@@ -1,130 +1,126 @@
-# Database Architecture
-
+# Database schema
 
 ## Tables
 
-### 1. role
-```sql
-    id (int)
-    name (string)
-    description (string)
-    created_at (datetime)
-    updated_at (datetime)
+### users:
+``` sql
+CREATE TABLE users(
+    id INT PRIMARY KEY AUTO_INCREMENT, 
+    username VARCHAR(50),
+    password VARCHAR(300),
+    last_login DATETIME,
+    is_superuser BOOLEAN,
+    profile_picture VARCHAR(300),
+    is_active BOOLEAN,
+    deactivated_at DATETIME,
+    created_at DATETIME,
+    updated_at DATETIME
+);
 ```
 
-### 2. user:
- ```sql   
-    id (int)
-    role_id (int)
-    name (string)
-    email (string)
-    password (string)
-    created_at (datetime)
-    updated_at (datetime)
-```
-### 3. user_address:
-```sql
-    id (int)
-    user_id (int)
-    city (string)
-    street (string)
-    postal_code (string)
-    telegram_username (string)
-    created_at (datetime)
-    updated_at (datetime)
-```
+users_details:
+``` sql
+CREATE TABLE users_details(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    student_id VARCHAR(50),
+    first_name VARCHAR(150),
+    last_name VARCHAR(150),
+    phone VARCHAR(15),
+    gender VARCHAR(10),
+    year YEAR,
+    is_active BOOLEAN,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+);
+``` 
 
-### 4. product_type:
-```sql
-    id (int)
-    name (string)
-    description (string)
-    created_at (datetime)
-    updated_at (datetime)
-```    
-
-### 5. category:
-```sql
-    id (int)
-    product_type_id (int)
-    name (string)
-    description (string)
-    created_at (datetime)
-    updated_at (datetime)
+divisions:
+``` sql
+CREATE TABLE divisions(
+   	id INT PRIMARY KEY AUTO_INCREMENT,
+   	name VARCHAR(25),
+    description TEXT,
+    is_active BOOLEAN,
+    created_at DATETIME,
+    updated_at DATETIME
+);
 ```
 
-### 6. category_detail:
-```sql
-    id (int)
-    category_id (int)
-    name (string)
-    created_at (datetime)
-    updated_at (datetime)
-```
-### 7. product:
-```sql
-    id (int)
-    user_id (int)
-    category_id (int)
-    name (string)
-    description (string)
-    expiry_date (datetime)
-    brand (string)
-    manufactur_date (datetime)
-    quantity (int)
-    price (real)
-    created_at (datetime)
-    updated_at (datetime)
+users_divisions:
+``` sql
+CREATE TABLE users_divisions(
+   	id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    division_id INT,
+    is_active BOOLEAN,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(division_id) REFERENCES divisions(id)
+);
 ```
 
-### 8. product_category_detail:
-```sql
-    id (int)
-    product_id (int)
-    category_detail_id (int)
-    value (string)
-    created_at (datetime)
-    updated_at (datetime)
+events:
+``` sql
+CREATE TABLE events(
+   	id INT PRIMARY KEY AUTO_INCREMENT,
+    division_id INT,
+    title VARCHAR(50),
+    description TEXT,
+    image_url VARCHAR(300),
+    issue_date DATETIME,
+    start_date DATETIME,
+    end_date DATETIME,
+    is_public BOOLEAN,
+    is_active BOOLEAN,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY(division_id) REFERENCES divisions(id)
+);
 ```
 
-### 9. product_images:
-```sql
-    id (int)
-    product_id (int)
-    image_url (string)
-    created_at (datetime)
-    updated_at (datetime)
+feeds:
+``` sql
+CREATE TABLE feeds(
+   	id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    event_id INT DEFAULT NULL,
+    title VARCHAR(50),
+    description TEXT,
+    issue_date DATETIME,
+    is_active BOOLEAN,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(event_id) REFERENCES events(id)
+);
 ```
 
-## Optional Features
-
-### 10. chat: 
-```sql
-    id (int)
-    user_1 (int)
-    user_2 (int)
-    is_active (boolean)
-    created_at (datetime)
-    updated_at (datetime)
+feeds_files:
+``` sql
+CREATE TABLE feeds_files(
+   	id INT PRIMARY KEY AUTO_INCREMENT,
+    feed_id INT,
+    file_url VARCHAR(300),
+    is_active BOOLEAN,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY(feed_id) REFERENCES feeds(id)
+);
 ```
 
-### 11. message:
-```sql
-    id (int)
-    chat_id (int)
-    sender_id (int)
-    receiver_id (int)
-    message (string)
-    created_at (datetime)
-    updated_at (datetime)
-```
-
-### 12. cart:
-```sql
-    id (int)
-    user_id (int)
-    product_id (int)
-    quantity (int)
-    created_at (datetime)
-    updated_at (datetime)
+attendances:
+``` sql
+CREATE TABLE attendances(
+   	id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    event_id INT,
+    is_active BOOLEAN,
+    created_at DATETIME,
+    updated_at DATETIME,
+    FOREIGN KEY(user_id) REFERENCES users(id),
+    FOREIGN KEY(event_id) REFERENCES events(id)
+);
 ```
