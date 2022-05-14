@@ -11,7 +11,5 @@
         <span class="material-icons"> event </span>
         <h2>Events</h2>
     </a>
-
-    <a href="../logout.php"><button class="sidebar__tweet btn btn-danger" >sign out</button></a>
 </div>
 <!-- sidebar ends -->
