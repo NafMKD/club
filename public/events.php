@@ -1,6 +1,6 @@
 <?php
 session_start();
-$feeds_page = 'active'; 
+$events_page = 'active'; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,16 +15,16 @@ $feeds_page = 'active';
     <!-- feed starts -->
     <div class="feed">
         <div class="feed__header">
-            <h2>Home</h2>
+            <h2>Events</h2>
         </div>
-        
+
         <!-- tweetbox starts -->
         <div class="tweetBox">
 
         </div>
         <!-- tweetbox ends -->
 
-        <?php include 'feeds/list.php' ?>
+        <?php include 'events/list.php' ?>
 
     </div>
     <!-- feed ends -->

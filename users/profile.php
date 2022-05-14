@@ -1,6 +1,6 @@
 <?php
 session_start();
-$feeds_page = 'active'; 
+$profile_page = 'active'; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +15,7 @@ $feeds_page = 'active';
     <!-- feed starts -->
     <div class="feed">
         <div class="feed__header">
-            <h2>Home</h2>
+            <h2>Profile</h2>
         </div>
         
         <!-- tweetbox starts -->
@@ -24,7 +24,7 @@ $feeds_page = 'active';
         </div>
         <!-- tweetbox ends -->
 
-        <?php include 'feeds/list.php' ?>
+        <?php include 'profile/view.php' ?>
 
     </div>
     <!-- feed ends -->

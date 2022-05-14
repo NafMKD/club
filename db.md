@@ -10,6 +10,7 @@ CREATE TABLE users(
     password VARCHAR(300),
     last_login DATETIME,
     is_superuser BOOLEAN,
+    is_president BOOLEAN,
     profile_picture VARCHAR(300),
     is_active BOOLEAN,
     deactivated_at DATETIME,
@@ -40,11 +41,13 @@ divisions:
 ``` sql
 CREATE TABLE divisions(
    	id INT PRIMARY KEY AUTO_INCREMENT,
+    division_head_id INT DEFAULT NULL,
    	name VARCHAR(25),
     description TEXT,
     is_active BOOLEAN,
     created_at DATETIME,
-    updated_at DATETIME
+    updated_at DATETIME,
+    FOREIGN KEY(division_head_id) REFERENCES users(id)
 );
 ```
 
@@ -70,7 +73,6 @@ CREATE TABLE events(
     title VARCHAR(50),
     description TEXT,
     image_url VARCHAR(300),
-    issue_date DATETIME,
     start_date DATETIME,
     end_date DATETIME,
     is_public BOOLEAN,
@@ -89,7 +91,6 @@ CREATE TABLE feeds(
     event_id INT DEFAULT NULL,
     title VARCHAR(50),
     description TEXT,
-    issue_date DATETIME,
     is_active BOOLEAN,
     created_at DATETIME,
     updated_at DATETIME,
