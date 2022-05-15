@@ -1,3 +1,48 @@
+<?php 
+
+if(isset($_POST['btn_signin'])){
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $user = \App\Account::login($username, $password);
+    if($user){
+        if($user->is_superuser == 1){
+            $_SESSION['admin'] = $user;
+            header('Location: ../admin/index.php');
+        }else{
+            $_SESSION['user'] = $user;
+            header('Location: ../users/index.php');
+        }
+    }else{
+        $err_message_signin = 'Incorrect Credentials';
+    }
+}
+
+if(isset($_POST['btn_signup'])){
+    $username = $_POST['new_username'];
+    $password = $_POST['new_password'];
+    $password_confirmation = $_POST['new_password_confirmation'];
+   
+    if($password == $password_confirmation){
+        $user = \App\Model\User::create([
+            'username' => $username,
+            'password' => $password,
+            'is_superuser' => 0,
+            'is_president'=> 0,
+            'profile_picture'=> null,
+            'is_active'=> 1
+        ]);
+        if($user->save()){
+            $_SESSION['user'] = $user;
+            header('Location: ../users/index.php');
+        }else{
+            $err_message_signup = 'Something went wrong';
+        }
+    }else{
+        $err_message_signup = 'Password does not match';
+    }
+}
+
+?>
 <!-- widgets starts -->
 <div class="widgets">
     <div class="widgets__input">
@@ -41,12 +86,16 @@
                         <a class="h1"><b>CSEC</b> ASTU</a>
                     </div>
                     <div class="card-body">
-
+                        <?php if(isset($err_message_signin)): ?>
+                            <div class="alert alert-danger alert-dismissible">
+                                <i class="icon fas fa-ban"></i> 
+                                <?php echo $err_message_signin; ?>
+                            </div>
+                        <?php endif ?>
                         <p class="login-box-msg">Sign in to start your session</p>
                         <form method="post">
-                            <input type="hidden" name="_token" value="RNEIuyOGsgncCCIWVnT8xTwXpkvmBcovVoV716dI">
                             <div class="input-group mb-3">
-                                <input type="text" class="form-control   " name="username" placeholder="username" />
+                                <input type="text" class="form-control" name="username" placeholder="username" />
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <i class="fas fa-envelope"></i>
@@ -54,7 +103,7 @@
                                 </div>
                             </div>
                             <div class="input-group mb-3">
-                                <input type="password" class="form-control  " name="password" placeholder="Password" />
+                                <input type="password" class="form-control" name="password" placeholder="Password" />
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <i class="fas fa-lock"></i>
@@ -63,7 +112,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-primary btn-block">
+                                    <button name="btn_signin" type="submit" class="btn btn-primary btn-block">
                                         <i class="fas fa-sign-in-alt mr-2"></i>
                                         Sign in
                                     </button>
@@ -92,9 +141,14 @@
                         <a class="h1"><b>CSEC</b> ASTU</a>
                     </div>
                     <div class="card-body">
+                        <?php if(isset($err_message_signup)): ?>
+                            <div class="alert alert-danger alert-dismissible">
+                                <i class="icon fas fa-ban"></i> 
+                                <?php echo $err_message_signup; ?>
+                            </div>
+                        <?php endif ?>
                         <p class="login-box-msg">Sign up to be part of...</p>
                         <form method="post">
-                            <input type="hidden" name="_token" value="RNEIuyOGsgncCCIWVnT8xTwXpkvmBcovVoV716dI">
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control " name="new_username" placeholder="username" />
                                 <div class="input-group-append">
@@ -121,7 +175,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-primary btn-block">
+                                    <button type="submit" name="btn_signup" class="btn btn-primary btn-block">
                                         <i class="fas fa-user-plus mr-2"></i>
                                         Sign up
                                     </button>

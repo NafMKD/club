@@ -206,7 +206,7 @@ class User implements Model
      * @param string $username
      * @return self
      */
-    public static function findByUsername(string $username, bool $showAll=false): self
+    public static function findByUsername(string $username, bool $showAll=false): ?self
     {
         $sql = "SELECT * FROM users WHERE username = :username";
         if(!$showAll) $sql .= " AND is_active = 1";

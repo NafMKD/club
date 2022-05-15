@@ -14,3 +14,20 @@
 <script src="../assets/custom-js.js"></script>
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="../assets/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<?php if(isset($err_message_signin)):?>
+<!-- costom js -->
+<script>
+    $(document).ready(function(){
+        $('#modal-signin').modal('show');
+    });
+</script>
+<?php endif;?>
+
+<?php if(isset($err_message_signup)):?>
+<!-- costom js -->
+<script>
+    $(document).ready(function(){
+        $('#modal-signup').modal('show');
+    });
+</script>
+<?php endif;?>
