@@ -1,6 +1,12 @@
 <?php
 session_start();
 $feeds_page = 'active'; 
+include __DIR__ . '/../vendor/autoload.php';
+
+use App\Database\DB;
+
+$r = DB::getInstance();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
