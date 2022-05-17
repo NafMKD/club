@@ -1,6 +1,9 @@
 <?php
 session_start();
 $divisions_page = 'active';
+
+$divisions = \App\Model\Division::findAll();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

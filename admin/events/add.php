@@ -1,13 +1,51 @@
-<form method="POST" enctype="multipart/form-data"> 
+<?php
+if (isset($_POST['btn_submit'])) {
+    $division = $_POST['division_id'];
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $start_date = $_POST['start_date'];
+    $end_date = $_POST['end_date'];
+    $is_public = $_POST['is_public'];
+    $image = $_FILES['image'];
+
+    $image_name = 'Event_' . uniqid() . '_' . $image['name'];
+    $data = \App\Model\Event::create([
+        'division_id' => $division,
+        'title' => $title,
+        'description' => $description,
+        'start_date' => $start_date,
+        'end_date' => $end_date,
+        'is_public' => $is_public ?? 0,
+        'image_url' => $image_name
+    ]);
+
+    if ($data->save()) {
+        $image_path = '../files/events/' . $image_name;
+        move_uploaded_file($image['tmp_name'], $image_path);
+        $add_message = ['success','Event added successfully'];
+    } else {
+        $add_message = ['danger','Something went wrong'];
+    }
+}
+?>
+<form method="POST" enctype="multipart/form-data">
     <div class="card-body">
+        <?php if (isset($add_message)) : ?>
+            <div class="alert alert-<?= $add_message[0]; ?> alert-dismissible">
+                <i class="icon fas fa-ban"></i>
+                <?= $add_message[1]; ?>
+            </div>
+        <?php endif ?>
         <div>
             <h3>Add Event</h3>
         </div>
-        <hr/>
+        <hr />
         <div class="form-group">
             <label>Division:</label>
             <select name="division_id" class="form-control select2" style="width: 100%;">
-                <option></option>
+                <?php foreach($divisions as $division) : ?>
+                    <option value="<?= $division->id; ?>"><?= $division->name; ?></option>
+                <?php endforeach; ?> 
             </select>
         </div>
         <div class="form-group">
@@ -52,10 +90,10 @@
         </div>
         <div class="form-group">
             <label>Picture: </label>
-            <input name="image" type="file" class="ml-4"/>
+            <input name="image" type="file" class="ml-4" />
         </div>
     </div>
     <div class="card-footer">
-        <button type="submit" class="btn btn-primary">Post</button>
+        <button type="submit" name="btn_submit" class="btn btn-primary">Post</button>
     </div>
 </form>
