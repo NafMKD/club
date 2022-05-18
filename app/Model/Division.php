@@ -8,7 +8,7 @@ use App\Database\DB;
 
 class Division implements Model
 {
-    public ?Event $event;
+    public ?array $event;
     public ?array $members;
     public ?User $division_head;
 
@@ -41,7 +41,7 @@ class Division implements Model
             $data['description'],
             $data['is_active'],
             null,
-            null,
+            $data['division_head_id'],
             null,
             null
         );
@@ -127,7 +127,7 @@ class Division implements Model
                 ':is_active' => $this->is_active,
                 ':division_head_id' => $this->division_head_id
             ]);
-            $this->id = DB::getInstance()->lastInsertId();
+            $this->id = (int) DB::getInstance()->lastInsertId();
         }
         $this->updateCurrentInstance();
         return true;

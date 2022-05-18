@@ -6,7 +6,6 @@ if (empty($_GET['view'])) {
 }
 
 use App\Helper\Formater;
-use App\Helper\Validation;
 use App\Model\User;
 use App\Model\UserDetail;
 
@@ -76,7 +75,7 @@ if (isset($_POST['btn_update'])) {
 <div class="card card-primary m-1">
     <div class="card-body box-profile">
         <div class="text-center">
-            <?php if ($user->profile_picture) : ?>
+            <?php if ($user->profile_picture && file_exists('../files/images/profile_pictures/' . $user->profile_picture)) : ?>
                 <img class="profile-user-img img-fluid img-circle" src="<?= '../files/images/profile_pictures/' . $user->profile_picture ?>" alt="User profile picture">
             <?php else : ?>
                 <img class="profile-user-img img-fluid img-circle" src="../assets/dist/img/logo.jpg" alt="User profile picture">

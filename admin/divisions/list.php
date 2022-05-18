@@ -1,3 +1,10 @@
+<?php
+
+use App\Model\Division;
+
+$divisions = Division::findAll();
+
+?>
 <div class="card m-1">
     <div class="card-header">
         <h3 class="card-title">Division list:</h3>
@@ -18,14 +25,16 @@
                 </tr>
             </thead>
             <tbody>
+                <?php $c=1;foreach($divisions as $division): ?>
                 <tr>
-                    <td>183</td>
-                    <td>John Doe</td>
+                    <td><?= $c ?></td>
+                    <td><?= $division->name ?></td>
                     <td>
-                        <a href="?edit" class="btn btn-info btn-xs"><i class="fas fa-edit mr-1"></i>Edit</a>
-                        <a href="?delete" class="btn btn-danger btn-xs"><i class="fas fa-trash mr-1"></i>Delete</a>
+                        <a href="?edit=<?= $division->id?>" class="btn btn-info btn-xs"><i class="fas fa-edit mr-1"></i>Edit</a>
+                        <a href="?delete=<?= $division->id?>" class="btn btn-danger btn-xs"><i class="fas fa-trash mr-1"></i>Delete</a>
                     </td>
                 </tr>
+                <?php $c++;endforeach ?>
             </tbody>
         </table>
     </div>
