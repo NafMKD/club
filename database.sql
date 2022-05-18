@@ -20,7 +20,7 @@ CREATE TABLE users_details(
     last_name VARCHAR(150),
     phone VARCHAR(15),
     gender VARCHAR(10),
-    year YEAR,
+    year INT,
     is_active BOOLEAN,
     created_at DATETIME,
     updated_at DATETIME,

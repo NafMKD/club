@@ -1,6 +1,7 @@
 <?php
 session_start();
 $divisions_page = 'active';
+include __DIR__ . '/../vendor/autoload.php';
 
 $divisions = \App\Model\Division::findAll();
 

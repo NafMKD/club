@@ -1,6 +1,7 @@
 <?php
 session_start();
 $users_page = 'active'; 
+include __DIR__ . '/../vendor/autoload.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

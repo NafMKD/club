@@ -21,6 +21,8 @@ class Account
     {
         $data = User::findByUsername($username);
         if($data && $data->password == md5($password)){
+            $data->last_login = date('Y-m-d H:i:s');
+            $data->save();
             return $data;
         }
         return null;

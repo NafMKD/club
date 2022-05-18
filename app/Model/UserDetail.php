@@ -8,7 +8,6 @@ use App\Database\DB;
 
 class UserDetail implements Model
 {
-    public ?User $user;
 
     public function __construct(
         public int $user_id,
@@ -17,14 +16,13 @@ class UserDetail implements Model
         public string $last_name,
         public string $gender,
         public string $phone,
-        public string $year,
+        public int $year,
         public int $is_active,
         public ?int $id,
         public ?string $created_at,
         public ?string $updated_at
     ) 
     {
-        $this->user = User::find($user_id);
         return $this;
     }
     /**
@@ -146,7 +144,7 @@ class UserDetail implements Model
                 ':is_active' => $this->is_active,
                 ':year' => $this->year,
             ]);
-            $this->id = DB::getInstance()->lastInsertId();
+            $this->id = (int) DB::getInstance()->lastInsertId();
         }
         $this->updateCurrentInstance();
         return true;
@@ -192,11 +190,41 @@ class UserDetail implements Model
                 $this->is_active = $data['is_active'];
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
-                $this->user = User::find($this->user_id);
                 return true;
             }
             return false;
         }
         return false;            
+    }
+
+    /**
+     * 
+     * find user by user id
+     * 
+     * @param int $user_id
+     * @return self
+     */
+    public static function findByUserId(int $user_id): ?self
+    {
+        $sql = "SELECT * FROM users_details WHERE user_id = :user_id";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute([':user_id' => $user_id]);
+        $data = $stmt->fetch();
+        if($data){
+            return new self(
+                $data['user_id'],
+                $data['student_id'],
+                $data['first_name'],
+                $data['last_name'],
+                $data['gender'],
+                $data['phone'],
+                $data['year'],
+                $data['is_active'],
+                $data['id'],
+                $data['created_at'],
+                $data['updated_at']
+            );
+        }
+        return null;
     }
 }

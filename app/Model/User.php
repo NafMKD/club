@@ -9,6 +9,7 @@ use App\Database\DB;
 class User implements Model
 {
     public array $division;
+    public ?UserDetail $userDetail;
 
     public function __construct(
         public string $username,
@@ -25,6 +26,7 @@ class User implements Model
     ) 
     {
         if($id) $this->division = UserDivision::findAllByUserId($id);
+        if($id) $this->userDetail = UserDetail::findByUserId($id);
         return $this;
     }
     /**
@@ -113,6 +115,37 @@ class User implements Model
     }
 
     /**
+     * 
+     * check if the username is already taken
+     * 
+     * @param string $username
+     * @return boolean
+     */
+    public static function isUsernameTaken(string $username): bool
+    {
+        $sql = "SELECT * FROM users WHERE username = :username";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute([':username' => $username]);
+        $data = $stmt->fetch();
+        return $data ? true : false;
+    }
+
+    /**
+     * 
+     * check if president is already taken
+     * 
+     * @return boolean
+     */
+    public static function isPresidentTaken(): bool
+    {
+        $sql = "SELECT * FROM users WHERE is_president = :is_president";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute([':is_president' => 1]);
+        $data = $stmt->fetch();
+        return $data ? true : false;
+    }
+
+    /**
      * save current instance to database
      * 
      * @return bool
@@ -146,7 +179,7 @@ class User implements Model
                 ':is_active' => $this->is_active,
                 ':deactivated_at' => $this->deactivated_at
             ]);
-            $this->id = DB::getInstance()->lastInsertId();
+            $this->id = (int) DB::getInstance()->lastInsertId();
         }
         $this->updateCurrentInstance();
         return true;
@@ -193,6 +226,7 @@ class User implements Model
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
                 $this->division = UserDivision::findAllByUserId($this->id);
+                $this->userDetail = UserDetail::findByUserId($this->id);
                 return true;
             }
             return false;
@@ -230,5 +264,7 @@ class User implements Model
         }
         return null;
     }
+
+
 
 }
