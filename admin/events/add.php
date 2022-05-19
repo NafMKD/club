@@ -1,39 +1,70 @@
 <?php
-if (isset($_POST['btn_submit'])) {
-    $division = $_POST['division_id'];
+
+use App\Helper\Formater;
+use App\Helper\Validation;
+use App\Model\Division;
+use App\Model\Event;
+
+$divisions = Division::findAll();
+
+if (isset($_POST['btn_post'])) {
+    $division = (int) $_POST['division_id'];
     $title = $_POST['title'];
     $description = $_POST['description'];
     $start_date = $_POST['start_date'];
     $end_date = $_POST['end_date'];
-    $is_public = $_POST['is_public'];
+    if(isset($_POST['is_public'])) $is_public = 1;
+    else $is_public = 0;
     $image = $_FILES['image'];
 
-    $image_name = 'Event_' . uniqid() . '_' . $image['name'];
-    $data = \App\Model\Event::create([
-        'division_id' => $division,
-        'title' => $title,
-        'description' => $description,
-        'start_date' => $start_date,
-        'end_date' => $end_date,
-        'is_public' => $is_public ?? 0,
-        'image_url' => $image_name
-    ]);
+    $errors = [];
 
-    if ($data->save()) {
-        $image_path = '../files/events/' . $image_name;
-        move_uploaded_file($image['tmp_name'], $image_path);
-        $add_message = ['success','Event added successfully'];
-    } else {
-        $add_message = ['danger','Something went wrong'];
+    if(Validation::isEmpty($title)) $errors['title'] = 'Title is required';
+
+    if(Validation::isEmpty($start_date)) $errors['start_date'] = 'Start date is required';
+
+    if(! Validation::checkDateRange($start_date, $end_date)) $errors['end_date'] = 'End date must be greater than start date';
+
+    if(! Validation::checkStartDate($start_date)) $errors['start_date'] = 'Start date must be greater than or equal to today';
+
+    if(! Validation::isValidImage($image['type'])) $errors['image'] = 'Image must be a valid image';
+
+    if(count($errors) === 0){
+        $start_date = Formater::formatDateForDb($start_date);
+        $end_date = Formater::formatDateForDb($end_date);
+        
+        $image_name = uniqid().'_'.date('YmdHis').'_'.$image['name'];
+        $event = Event::create([
+            'division_id' => $division,
+            'title' => $title,
+            'description' => $description,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            'is_public' => $is_public,
+            'image_url' => $image_name,
+            'is_active' => 1
+        ]);
+
+        if ($event->save()) {
+            $image_path = __DIR__.'/../../files/images/events/'.$image_name;
+            move_uploaded_file($image['tmp_name'], $image_path);
+            $return_message = ['success','Event posted successfully', 'check'];
+        }else {
+            $return_message = ['danger','Something went wrong', 'ban'];
+        }
+    }else{
+        $return_message = ['danger', 'Please fix the errors', 'ban'];
     }
+
+
 }
 ?>
 <form method="POST" enctype="multipart/form-data">
     <div class="card-body">
-        <?php if (isset($add_message)) : ?>
-            <div class="alert alert-<?= $add_message[0]; ?> alert-dismissible">
-                <i class="icon fas fa-ban"></i>
-                <?= $add_message[1]; ?>
+        <?php if (isset($return_message)) : ?>
+            <div class="alert alert-<?= $return_message[0]; ?> alert-dismissible">
+                <i class="icon fas fa-<?= $return_message[2] ?>"></i>
+                <?= $return_message[1]; ?>
             </div>
         <?php endif ?>
         <div>
@@ -51,6 +82,7 @@ if (isset($_POST['btn_submit'])) {
         <div class="form-group">
             <label>Title:</label>
             <input name="title" type="text" class="form-control" placeholder="Enter title">
+            <span class="text-danger"><?php if(isset($errors['title'])): ?><?= $errors['title'] ?> <?php endif ?></span>
         </div>
         <div class="form-group">
             <label>Description:</label>
@@ -66,6 +98,7 @@ if (isset($_POST['btn_submit'])) {
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                     </div>
+                    <span class="text-danger"><?php if(isset($errors['start_date'])): ?><?= $errors['start_date'] ?> <?php endif ?></span>
                 </div>
             </div>
             <div class="col-md-6">
@@ -77,6 +110,7 @@ if (isset($_POST['btn_submit'])) {
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                     </div>
+                    <span class="text-danger"><?php if(isset($errors['end_date'])): ?><?= $errors['end_date'] ?> <?php endif ?></span>
                 </div>
             </div>
         </div>
@@ -90,10 +124,11 @@ if (isset($_POST['btn_submit'])) {
         </div>
         <div class="form-group">
             <label>Picture: </label>
-            <input name="image" type="file" class="ml-4" />
+            <input name="image" type="file" class="ml-4" /><br/>
+            <span class="text-danger"><?php if(isset($errors['image'])): ?><?= $errors['image'] ?> <?php endif ?></span>
         </div>
     </div>
     <div class="card-footer">
-        <button type="submit" name="btn_submit" class="btn btn-primary">Post</button>
+        <button type="submit" name="btn_post" class="btn btn-primary">Post</button>
     </div>
 </form>

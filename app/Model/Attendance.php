@@ -122,7 +122,7 @@ class Attendance implements Model
                 ':event_id' => $this->event_id,
                 ':is_active' => $this->is_active
             ]);
-            $this->id = DB::getInstance()->lastInsertId();
+            $this->id = (int) DB::getInstance()->lastInsertId();
         }
         $this->updateCurrentInstance();
         return true;

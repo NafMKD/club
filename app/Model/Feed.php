@@ -8,9 +8,7 @@ use App\Database\DB;
 
 class Feed implements Model
 {
-    public ?Event $event;
-    public ?User $user;
-    public ?FeedFile $feed_file;
+    public ?array $feed_file;
 
     public function __construct(
         public int $user_id,
@@ -23,8 +21,6 @@ class Feed implements Model
         public ?string $updated_at
     ) 
     {
-        if($event_id) $this->event = Event::find($event_id);
-        $this->user = User::find($user_id);
         if($id) $this->feed_file = FeedFile::findAllByFeedId($id);
         return $this;
     }
@@ -132,7 +128,7 @@ class Feed implements Model
                 ':is_active' => $this->is_active,
                 ':event_id' => $this->event_id
             ]);
-            $this->id = DB::getInstance()->lastInsertId();
+            $this->id = (int) DB::getInstance()->lastInsertId();
         }
         $this->updateCurrentInstance();
         return true;
@@ -175,8 +171,6 @@ class Feed implements Model
                 $this->event_id = $data['event_id'];
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
-                if($this->event_id) $this->event = Event::find($this->event_id);
-                $this->user = User::find($this->user_id);
                 $this->feed_file = FeedFile::findAllByFeedId($this->id);
                 return true;
             }
@@ -211,5 +205,19 @@ class Feed implements Model
             );
         }
         return $feeds;
+    }
+
+    /**
+     * 
+     * has user
+     * 
+     * @return ?User
+     */
+    public function hasUser(): ?User
+    {
+        if($this->user_id){
+            return User::find($this->user_id);
+        }
+        return null;
     }
 }

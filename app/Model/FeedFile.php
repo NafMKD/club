@@ -8,8 +8,6 @@ use App\Database\DB;
 
 class FeedFile implements Model
 {
-    public ?Feed $feed;
-
     public function __construct(
         public int $feed_id,
         public string $file_url,
@@ -19,7 +17,6 @@ class FeedFile implements Model
         public ?string $updated_at
     ) 
     {   
-        $this->feed = Feed::find($feed_id);
         return $this;
     }
     /**
@@ -116,7 +113,7 @@ class FeedFile implements Model
                 ':file_url' => $this->file_url,
                 ':is_active' => $this->is_active
             ]);
-            $this->id = DB::getInstance()->lastInsertId();
+            $this->id = (int) DB::getInstance()->lastInsertId();
         }
         $this->updateCurrentInstance();
         return true;
@@ -157,7 +154,6 @@ class FeedFile implements Model
                 $this->is_active = $data['is_active'];
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
-                $this->feed = Feed::find($this->feed_id);
                 return true;
             }
             return false;
@@ -190,5 +186,18 @@ class FeedFile implements Model
             );
         }
         return $feedFiles;
+    }
+
+    /**
+     * 
+     * has feed
+     * 
+     */
+    public function hasFeed(): ?Feed
+    {
+        if($this->feed_id) {
+            return Feed::find($this->feed_id);
+        }
+        return null;
     }
 }

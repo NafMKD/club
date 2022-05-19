@@ -6,10 +6,10 @@ if(isset($_POST['btn_signin'])){
     $user = \App\Account::login($username, $password);
     if($user){
         if($user->is_superuser == 1){
-            $_SESSION['admin'] = $user;
+            $_SESSION['admin'] = serialize($user);
             header('Location: ../admin/index.php');
         }else{
-            $_SESSION['user'] = $user;
+            $_SESSION['user'] = serialize($user);
             header('Location: ../users/index.php');
         }
     }else{
@@ -32,7 +32,7 @@ if(isset($_POST['btn_signup'])){
             'is_active'=> 1
         ]);
         if($user->save()){
-            $_SESSION['user'] = $user;
+            $_SESSION['user'] = serialize($user);
             header('Location: ../users/index.php');
         }else{
             $err_message_signup = 'Something went wrong';

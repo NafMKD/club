@@ -1,5 +1,6 @@
 <?php
 
+use App\Helper\Validation;
 use App\Model\Division;
 use App\Model\User;
 
@@ -11,6 +12,10 @@ if (isset($_POST['btn_add'])) {
     $head = ($_POST['division_head_id'] !== "") ? (int) $_POST['division_head_id'] : null;
 
     $errors = [];
+
+    if(Validation::isEmpty($name)){
+        $errors['name'] = 'Please enter a name';
+    }
 
     if (count($errors) === 0) {
         $division = Division::create([
@@ -60,6 +65,7 @@ if (isset($_POST['btn_add'])) {
         <div class="form-group">
             <label>Name:</label>
             <input name="name" type="text" class="form-control" placeholder="Enter title">
+            <span class="text-danger"><?php if(isset($errors['name'])): ?><?= $errors['name'] ?> <?php endif ?></span>
         </div>
         <div class="form-group">
             <label>Description:</label>

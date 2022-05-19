@@ -8,8 +8,6 @@ use App\Database\DB;
 
 class UserDivision implements Model
 {
-    public ?User $user;
-    public ?Division $division;
 
     public function __construct(
         public int $user_id,
@@ -20,8 +18,6 @@ class UserDivision implements Model
         public ?string $updated_at
     ) 
     {
-        $this->user = User::find($user_id);
-        $this->division = Division::find($division_id);
         return $this;
     }
     /**
@@ -118,7 +114,7 @@ class UserDivision implements Model
                 ':division_id' => $this->division_id,
                 ':is_active' => $this->is_active,
             ]);
-            $this->id = DB::getInstance()->lastInsertId();
+            $this->id = (int) DB::getInstance()->lastInsertId();
         }
         $this->updateCurrentInstance();
         return true;
@@ -159,8 +155,6 @@ class UserDivision implements Model
                 $this->is_active = $data['is_active'];
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
-                $this->user = User::find($this->user_id);
-                $this->division = Division::find($this->division_id);
                 return true;
             }
             return false;

@@ -8,8 +8,7 @@ use App\Database\DB;
 
 class Event implements Model
 {
-    public ?Division $division;
-    public ?Feed $feed;
+    public ?array $feed;
 
     public function __construct(
         public string $title,
@@ -25,7 +24,6 @@ class Event implements Model
         public ?string $updated_at
     ) 
     {
-        if($division_id) $this->division = Division::find($division_id);
         if($id) $this->feed = Feed::findAllByEventId($id);
         return $this;
     }
@@ -148,7 +146,7 @@ class Event implements Model
                 ':is_public' => $this->is_public,
                 ':is_active' => $this->is_active
             ]);
-            $this->id = DB::getInstance()->lastInsertId();
+            $this->id = (int) DB::getInstance()->lastInsertId();
         }
         $this->updateCurrentInstance();
         return true;
@@ -194,7 +192,6 @@ class Event implements Model
                 $this->is_active = $data['is_active'];
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
-                if($this->division_id) $this->division = Division::find($this->division_id);
                 $this->feed = Feed::findAllByEventId($this->id);
                 return true;
             }
@@ -215,6 +212,85 @@ class Event implements Model
         if(!$showAll) $sql .= " AND is_active = 1";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute([':id' => $id]);
+        $data = $stmt->fetchAll();
+        $events = [];
+        foreach ($data as $event) {
+            $events[] = new self(
+                $event['title'],
+                $event['description'],
+                $event['id'],
+                $event['division_id'],
+                $event['image_url'],
+                $event['start_date'],
+                $event['end_date'],
+                $event['is_public'],
+                $event['is_active'],
+                $event['created_at'],
+                $event['updated_at']
+            );
+        }
+        return $events;
+    }
+
+    /**
+     * 
+     * find all by date descending
+     * 
+     * @return self[]
+     */
+    public static function findAllByDateDescending(bool $showAll = false): array
+    {
+        $sql = "SELECT * FROM events";
+        if(!$showAll) $sql .= " WHERE is_active = 1";
+        $sql .= " ORDER BY created_at DESC";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute();
+        $data = $stmt->fetchAll();
+        $events = [];
+        foreach ($data as $event) {
+            $events[] = new self(
+                $event['title'],
+                $event['description'],
+                $event['id'],
+                $event['division_id'],
+                $event['image_url'],
+                $event['start_date'],
+                $event['end_date'],
+                $event['is_public'],
+                $event['is_active'],
+                $event['created_at'],
+                $event['updated_at']
+            );
+        }
+        return $events;
+    }
+
+    /**
+     * 
+     * has division
+     * 
+     */
+    public function hasDivision(): ?Division
+    {
+        if($this->division_id) {
+            return Division::find($this->division_id);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * get upcoming events
+     * 
+     * @return self[]
+     */
+    public static function getUpcomingEvents(bool $showAll = false): array
+    {
+        $sql = "SELECT * FROM events WHERE start_date >= NOW()";
+        if(!$showAll) $sql .= " AND is_active = 1";
+        $sql .= " ORDER BY start_date ASC";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute();
         $data = $stmt->fetchAll();
         $events = [];
         foreach ($data as $event) {

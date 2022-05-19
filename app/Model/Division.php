@@ -8,9 +8,9 @@ use App\Database\DB;
 
 class Division implements Model
 {
-    public ?array $event;
-    public ?array $members;
-    public ?User $division_head;
+    public ?array $event = [];
+    public ?array $members = [];
+    public ?User $division_head = null;
 
     public function __construct(
         public string $name,

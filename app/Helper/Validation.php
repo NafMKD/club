@@ -54,4 +54,31 @@ class Validation
         return preg_match('/^image\/(jpeg|png|gif)$/', $input);
     }
 
+    /**
+     * 
+     * check date range
+     * 
+     * @param string $start_date
+     * @param string $end_date
+     * @return bool
+     */
+    public static function checkDateRange(?string $start_date, ?string $end_date): bool
+    {
+        if($start_date && $end_date) return (new \DateTime($start_date))->format('Y-m-d') <= (new \DateTime($end_date))->format('Y-m-d');
+        else return false;
+    }
+
+    /**
+     * 
+     * check start date
+     * 
+     * @param string $start_date
+     * @return bool
+     */
+    public static function checkStartDate(?string $start_date): bool
+    {
+        if($start_date) return (new \DateTime($start_date))->format('Y-m-d') >= (new \DateTime())->format('Y-m-d');
+        else return false;
+    }
+
 }
