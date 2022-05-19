@@ -310,4 +310,37 @@ class Event implements Model
         }
         return $events;
     }
+
+    /**
+     * 
+     * show public event
+     * 
+     * @return self[]
+     */
+    public static function getPublicEvents(bool $showAll = false): array
+    {
+        $sql = "SELECT * FROM events WHERE is_public = 1";
+        if(!$showAll) $sql .= " AND is_active = 1";
+        $sql .= " ORDER BY start_date ASC";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute();
+        $data = $stmt->fetchAll();
+        $events = [];
+        foreach ($data as $event) {
+            $events[] = new self(
+                $event['title'],
+                $event['description'],
+                $event['id'],
+                $event['division_id'],
+                $event['image_url'],
+                $event['start_date'],
+                $event['end_date'],
+                $event['is_public'],
+                $event['is_active'],
+                $event['created_at'],
+                $event['updated_at']
+            );
+        }
+        return $events;
+    }
 }
