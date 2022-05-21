@@ -9,7 +9,6 @@ use App\Database\DB;
 class Division implements Model
 {
     public ?array $event = [];
-    public ?array $members = [];
     public ?User $division_head = null;
 
     public function __construct(
@@ -24,7 +23,6 @@ class Division implements Model
     ) 
     {
         if($division_head_id) $this->division_head = User::find($division_head_id);
-        if($id) $this->members = UserDivision::findAllByDivisionId($id);
         if($id) $this->event = Event::findAllByDivisionId($id);
         return $this;
     }
@@ -51,6 +49,7 @@ class Division implements Model
      * get single record by id
      * 
      * @param int $id
+     * @param bool $showAll
      * @return self
      */
     public static function find(int $id, bool $showAll = false): ?self
@@ -77,6 +76,7 @@ class Division implements Model
     /**
      * get all records
      * 
+     * @param bool $showAll
      * @return self[]
      */
     public static function findAll(bool $showAll = false): array
@@ -85,6 +85,37 @@ class Division implements Model
         if(!$showAll) $sql .= " WHERE is_active = 1";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
+        $data = $stmt->fetchAll();
+        $divisions = [];
+        foreach ($data as $division) {
+            $divisions[] = new self(
+                $division['name'],
+                $division['description'],
+                $division['is_active'],
+                $division['id'],
+                $division['division_head_id'],
+                $division['created_at'],
+                $division['updated_at']
+            );
+        }
+        return $divisions;
+    }
+
+    /**
+     * get all records for user registreation
+     * 
+     * get all divisions except the user divisions
+     * 
+     * @param int $id
+     * @param bool $showAll
+     * @return self[]
+     */
+    public static function findAllUserAdd(int $id, bool $showAll = false): array
+    {
+        $sql = "SELECT * FROM divisions WHERE id NOT IN (SELECT division_id FROM users_divisions WHERE user_id = :user_id)";
+        if(!$showAll) $sql .= " AND is_active = 1";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute([':user_id' => $id]);
         $data = $stmt->fetchAll();
         $divisions = [];
         foreach ($data as $division) {
@@ -170,12 +201,30 @@ class Division implements Model
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
                 if($this->division_head_id) $this->division_head = User::find($this->division_head_id);
-                $this->members = UserDivision::findAllByDivisionId($this->id);
                 $this->event = Event::findAllByDivisionId($this->id);
                 return true;
             }
             return false;
         }
         return false;
+    }
+
+    /**
+     * get all records by division id
+     * 
+     * @return User[]
+     */
+    public function findAllMembers(bool $showAll = false): array
+    {
+        $sql = "SELECT * FROM users_divisions WHERE division_id = :division_id";
+        if(!$showAll) $sql .= " AND is_active = 1";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute([':division_id' => $this->id]);
+        $data = $stmt->fetchAll();
+        $result = [];
+        foreach($data as $row) {
+            $result[] = User::find($row['user_id']);
+        }
+        return $result;
     }
 }

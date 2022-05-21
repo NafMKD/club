@@ -24,7 +24,7 @@ $events = Event::findAllByDateDescending();
             <div class="post__header">
                 <div class="post__headerText">
                     <h3>
-                        <?= $event->hasDivision()->name ?>
+                    <a href="events.php?attendance=<?= $event->id ?>" style="text-decoration: none;"><?= $event->hasDivision()->name ?></a>
                         <span class="post__headerSpecial"><?= Formater::formatDateLikeXDaysAgo($event->created_at) ?></span>
                     </h3>
                 </div>

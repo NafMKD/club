@@ -315,6 +315,7 @@ class Event implements Model
      * 
      * show public event
      * 
+     * @param bool $showAll
      * @return self[]
      */
     public static function getPublicEvents(bool $showAll = false): array
@@ -342,5 +343,61 @@ class Event implements Model
             );
         }
         return $events;
+    }
+
+    /**
+     * 
+     * get today's events
+     * 
+     * @param bool $showAll
+     * @return self[]
+     */
+    public static function getTodaysEvent(bool $showAll = false) : array
+    {
+        $date = date('Y-m-d');
+        $sql = "SELECT * FROM events WHERE start_date LIKE '%$date%'";
+        if(!$showAll) $sql .= " AND is_active = 1";
+        $sql .= " ORDER BY start_date ASC";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute();
+        $data = $stmt->fetchAll();
+        $events = [];
+        foreach ($data as $event) {
+            $events[] = new self(
+                $event['title'],
+                $event['description'],
+                $event['id'],
+                $event['division_id'],
+                $event['image_url'],
+                $event['start_date'],
+                $event['end_date'],
+                $event['is_public'],
+                $event['is_active'],
+                $event['created_at'],
+                $event['updated_at']
+            );
+        }
+        return $events;
+    }
+
+    /**
+     * 
+     * get members for attendance
+     * 
+     * @param bool $showAll
+     * @return User[]
+     */
+    public function getMemberForAttendance(bool $showAll = false) : array
+    {
+        $sql = "SELECT * FROM users WHERE id NOT IN (SELECT user_id FROM attendances WHERE event_id = :event_id) AND id IN (SELECT user_id FROM users_divisions WHERE division_id = (SELECT division_id FROM events WHERE id = :event_id))";
+        if(!$showAll) $sql .= " AND is_active = 1";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute(['event_id' => $this->id]);
+        $data = $stmt->fetchAll();
+        $users = [];
+        foreach ($data as $user) {
+            $users[] = User::find($user['id']);
+        }
+        return $users;
     }
 }

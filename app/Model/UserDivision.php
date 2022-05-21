@@ -166,7 +166,7 @@ class UserDivision implements Model
      * get all records by user id
      * 
      * @param int $user_id
-     * @return self[]
+     * @return Division[]
      */
     public static function findAllByUserId(int $user_id, bool $showAll = false): array
     {
@@ -177,42 +177,9 @@ class UserDivision implements Model
         $data = $stmt->fetchAll();
         $result = [];
         foreach($data as $row) {
-            $result[] = new self(
-                $row['user_id'],
-                $row['division_id'],
-                $row['is_active'],
-                $row['id'],
-                $row['created_at'],
-                $row['updated_at'],
-            );
+            $result[] = Division::find($row['division_id']);
         }
         return $result;
     }
 
-    /**
-     * get all records by division id
-     * 
-     * @param int $division_id
-     * @return self[]
-     */
-    public static function findAllByDivisionId(int $division_id, bool $showAll = false): array
-    {
-        $sql = "SELECT * FROM users_divisions WHERE division_id = :division_id";
-        if(!$showAll) $sql .= " AND is_active = 1";
-        $stmt = DB::getInstance()->prepare($sql);
-        $stmt->execute([':division_id' => $division_id]);
-        $data = $stmt->fetchAll();
-        $result = [];
-        foreach($data as $row) {
-            $result[] = new self(
-                $row['user_id'],
-                $row['division_id'],
-                $row['is_active'],
-                $row['id'],
-                $row['created_at'],
-                $row['updated_at'],
-            );
-        }
-        return $result;
-    }
 }

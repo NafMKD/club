@@ -17,7 +17,7 @@ include __DIR__ . '/../vendor/autoload.php';
     <div class="feed">
         <div class="feed__header">
             <h2 class="float-left">Events</h2>
-            <?php if(isset($_GET['add'])): ?>
+            <?php if(isset($_GET['add']) || isset($_GET['attendance'])): ?>
                 <a href="?list" class="float-right material-icons" style="cursor: pointer;">arrow_back</a>
             <?php else: ?>
                 <a href="?add" class="float-right material-icons" style="cursor: pointer;">add_circle</a>
@@ -33,6 +33,8 @@ include __DIR__ . '/../vendor/autoload.php';
 
         <?php if(isset($_GET['add'])): ?>
             <?php include 'events/add.php' ?>
+        <?php elseif(isset($_GET['attendance'])): ?>
+            <?php include 'events/attendance.php' ?>
         <?php elseif(isset($_GET['list']) || count($_GET) == 0): ?>
             <?php include 'events/list.php' ?>
         <?php endif ?>

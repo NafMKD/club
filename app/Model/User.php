@@ -56,6 +56,7 @@ class User implements Model
      * get single record by id
      * 
      * @param int $id
+     * @param bool $showAll
      * @return self
      */
     public static function find(int $id,bool $showAll = false): ?self
@@ -86,6 +87,7 @@ class User implements Model
     /**
      * get all records
      * 
+     * @param bool $showAll
      * @return self[]
      */
     public static function findAll(bool $showAll = false): array
@@ -265,6 +267,28 @@ class User implements Model
         return null;
     }
 
+    /**
+     * 
+     * get user attendance progresss
+     * 
+     * @param int $division_id
+     * @return ?array
+     */
+    public function getUserAttendanceProgress(int $division_id, bool $showAll = false) : ?array
+    {
+        $sql = "SELECT COUNT(*) FROM attendances WHERE event_id IN (SELECT id FROM events WHERE division_id = :division_id) AND is_attended = 1 AND user_id = :user_id";
+        if(!$showAll) $sql .= " AND is_active = 1";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute([':division_id' => $division_id, 'user_id' => $this->id]);
+        $data = $stmt->fetch();
 
+        $sql2 = "SELECT COUNT(*) FROM events WHERE division_id = :division_id ";
+        if(!$showAll) $sql2 .= " AND is_active = 1";
+        $stmt2 = DB::getInstance()->prepare($sql2);
+        $stmt2->execute([':division_id' => $division_id]);
+        $data2 = $stmt2->fetch();
+        
+        return ['attended'=>$data[0], 'all'=>$data2[0]];
+    }
 
 }

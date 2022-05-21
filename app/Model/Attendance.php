@@ -8,22 +8,19 @@ use App\Database\DB;
 
 class Attendance implements Model
 {
-    public ?User $user;
-    public ?Event $event;
     /**
      * constarctor
      */
     public function __construct(
         public int $user_id,	
         public int $event_id,
+        public int $is_attended,
         public int $is_active,
         public ?int $id,
         public ?string $created_at,
         public ?string $updated_at
     ) 
     {
-        $this->user = User::find($user_id);
-        $this->event = Event::find($event_id);
         return $this;
     }
 
@@ -38,6 +35,7 @@ class Attendance implements Model
         return new self(
             $data['user_id'],
             $data['event_id'],
+            $data['is_attended'],
             $data['is_active'],
             null,
             null,
@@ -62,6 +60,7 @@ class Attendance implements Model
             return new self(
                 $data['user_id'],
                 $data['event_id'],
+                $data['is_attended'],
                 $data['is_active'],
                 $data['id'],
                 $data['created_at'],
@@ -88,6 +87,7 @@ class Attendance implements Model
             $attendances[] = new self(
                 $attendance['user_id'],
                 $attendance['event_id'],
+                $attendance['is_attended'],
                 $attendance['is_active'],
                 $attendance['id'],
                 $attendance['created_at'],
@@ -106,20 +106,22 @@ class Attendance implements Model
     public function save():bool
     {
         if($this->id){
-            $sql = "UPDATE attendances SET user_id = :user_id, event_id = :event_id, is_active = :is_active, updated_at = NOW() WHERE id = :id";
+            $sql = "UPDATE attendances SET user_id = :user_id, event_id = :event_id, is_attended = :is_attended, is_active = :is_active, updated_at = NOW() WHERE id = :id";
             $stmt = DB::getInstance()->prepare($sql);
             $stmt->execute([
                 ':user_id' => $this->user_id,
                 ':event_id' => $this->event_id,
+                ':is_attended' => $this->is_attended,
                 ':is_active' => $this->is_active,
                 ':id' => $this->id
             ]);
         }else{
-            $sql = "INSERT INTO attendances (user_id, event_id, is_active, created_at, updated_at) VALUES (:user_id, :event_id, :is_active, NOW(), NOW())";
+            $sql = "INSERT INTO attendances (user_id, event_id, is_attended, is_active, created_at, updated_at) VALUES (:user_id, :event_id, :is_attended, :is_active, NOW(), NOW())";
             $stmt = DB::getInstance()->prepare($sql);
             $stmt->execute([
                 ':user_id' => $this->user_id,
                 ':event_id' => $this->event_id,
+                ':is_attended' => $this->is_attended,
                 ':is_active' => $this->is_active
             ]);
             $this->id = (int) DB::getInstance()->lastInsertId();
@@ -160,11 +162,10 @@ class Attendance implements Model
             if($data){
                 $this->user_id = $data['user_id'];
                 $this->event_id = $data['event_id'];
+                $this->is_attended = $data['is_attended'];
                 $this->is_active = $data['is_active'];
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
-                $this->user = User::find($this->user_id);
-                $this->event = Event::find($this->event_id);
                 return true;
             }
             return false;

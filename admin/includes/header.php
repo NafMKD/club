@@ -2,6 +2,7 @@
     if(! isset($_SESSION['admin'])){
         header('Location: ../public/?session=expired');
     }
+    
 ?>
 <meta charset="UTF-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />

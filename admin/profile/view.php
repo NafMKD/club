@@ -1,47 +1,47 @@
+<?php
+
+use App\Helper\Formater;
+
+$user = unserialize($_SESSION['admin']);
+
+?>
+
 <div class="card card-primary m-1">
     <div class="card-body box-profile">
         <div class="text-center">
-            <img class="profile-user-img img-fluid img-circle" src="../assets/dist/img/logo.jpg" alt="User profile picture">
+            <?php if ($user->profile_picture && file_exists('../files/images/profile_pictures/' . $user->profile_picture)) : ?>
+                <img class="profile-user-img img-fluid img-circle" src="<?= '../files/images/profile_pictures/' . $user->profile_picture ?>" alt="User profile picture">
+            <?php else : ?>
+                <img class="profile-user-img img-fluid img-circle" src="../assets/dist/img/logo.jpg" alt="User profile picture">
+            <?php endif; ?>
         </div>
-
-        <h3 class="profile-username text-center">Nina Mcintire</h3>
-
-        <p class="text-muted text-center">Software Engineer</p>
+        <?php if ($user->userDetail) : ?>
+            <h3 class="profile-username text-center"><?= $user->userDetail->first_name . ' ' . $user->userDetail->last_name ?></h3>
+        <?php else : ?>
+            <h3 class="profile-username text-center"><?= $user->username ?></h3>
+        <?php endif; ?>
+        <p class="text-muted text-center">Since <?= Formater::formatMonthYear($user->created_at) ?></p>
     </div>
 </div>
 
 <div class="card m-1">
     <div class="card-header p-2">
         <ul class="nav nav-pills">
-            <li class="nav-item"><a class="nav-link active" href="#detail" data-toggle="tab">Detail</a></li>
-            <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
+            <li class="nav-item"><a class="nav-link <?php if(!isset($_GET['settings']) && !isset($_GET['profPic']) && !isset($_GET['password'])) echo 'active'; ?>" href="profile.php">Detail</a></li>
+            <li class="nav-item"><a class="nav-link <?php if(isset($_GET['settings'])) echo 'active'; ?>" href="?settings">Settings</a></li>
+            <li class="nav-item"><a class="nav-link <?php if(isset($_GET['profPic'])) echo 'active'; ?>" href="?profPic">Profile picture</a></li>
+            <li class="nav-item"><a class="nav-link <?php if(isset($_GET['password'])) echo 'active'; ?>" href="?password">Password</a></li>
         </ul>
     </div><!-- /.card-header -->
     <div class="card-body" style="width: 611px;">
-        <div class="tab-content">
-            <div class="tab-pane active" id="detail">
-                <dl class="row">
-                    <dt class="col-sm-4">user id:</dt>
-                    <dd class="col-sm-8">tset</dd>
-                    <dt class="col-sm-4">Username:</dt>
-                    <dd class="col-sm-8">tset</dd>
-                    <dt class="col-sm-4">student id:</dt>
-                    <dd class="col-sm-8">tset</dd>
-                    <dt class="col-sm-4">Full Name:</dt>
-                    <dd class="col-sm-8">tset</dd>
-                    <dt class="col-sm-4">Phone:</dt>
-                    <dd class="col-sm-8">tset</dd>
-                    <dt class="col-sm-4">Gender:</dt>
-                    <dd class="col-sm-8">tset</dd>
-                    <dt class="col-sm-4">Year:</dt>
-                    <dd class="col-sm-8">tset</dd>
-                </dl>
-            </div>
-            <div class="tab-pane" id="settings">
-                <form method="POST">
-
-                </form>
-            </div>
-        </div>
+        <?php if(!isset($_GET['settings']) && !isset($_GET['profPic']) && !isset($_GET['password'])): ?>
+            <?php include 'inc/detail.php'; ?>
+        <?php elseif(isset($_GET['settings'])): ?>
+            <?php include 'inc/setting.php'; ?>
+        <?php elseif(isset($_GET['profPic'])): ?>
+            <?php include 'inc/profpic.php'; ?>
+        <?php elseif(isset($_GET['password'])): ?>
+            <?php include 'inc/password.php'; ?>
+        <?php endif ?>
     </div>
 </div>

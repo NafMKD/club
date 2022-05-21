@@ -118,6 +118,7 @@ CREATE TABLE attendances(
    	id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT,
     event_id INT,
+    is_attended BOOLEAN,
     is_active BOOLEAN,
     created_at DATETIME,
     updated_at DATETIME,

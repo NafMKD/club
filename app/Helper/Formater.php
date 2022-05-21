@@ -79,4 +79,15 @@ class Formater
         if($date) return (new \DateTime($date))->format('M d \a\t h:i a');
         else return '-';
     }
+
+    /**
+     * 
+     * date format for post h:i A
+     * 
+     */
+    public static function formatTime(?string $date): string
+    {
+        if($date) return (new \DateTime($date))->format('h:i a');
+        else return '-';
+    }
 }
