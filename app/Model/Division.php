@@ -227,4 +227,33 @@ class Division implements Model
         }
         return $result;
     }
+
+    /**
+     * 
+     * search division head by user id
+     * 
+     * @param int $id
+     * @param bool $showAll
+     * @return ?self
+     */
+    public static function findByUserId(int $id, bool $showAll = false): ?self
+    {
+        $sql = "SELECT * FROM divisions WHERE division_head_id = :user_id";
+        if(! $showAll) $sql .= " AND is_active = 1";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute([':user_id' => $id]);
+        $data = $stmt->fetch();
+        if ($data) {
+            return new self(
+                $data['name'],
+                $data['description'],
+                $data['is_active'],
+                $data['id'],
+                $data['division_head_id'],
+                $data['created_at'],
+                $data['updated_at']
+            );
+        }
+        return null;
+    }
 }

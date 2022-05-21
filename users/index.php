@@ -3,9 +3,7 @@ session_start();
 $feeds_page = 'active'; 
 include __DIR__ . '/../vendor/autoload.php';
 
-use App\Database\DB;
-
-$r = DB::getInstance();
+$user = unserialize($_SESSION['user']);
 
 ?>
 <!DOCTYPE html>

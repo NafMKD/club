@@ -5,11 +5,13 @@ if(isset($_POST['btn_signin'])){
     $password = $_POST['password'];
     $user = \App\Account::login($username, $password);
     if($user){
-        if($user->is_superuser == 1){
-            $_SESSION['admin'] = serialize($user);
+        if($user['user_data']->is_superuser == 1){
+            $_SESSION['admin'] = serialize($user['user_data']);
             header('Location: ../admin/index.php');
         }else{
-            $_SESSION['user'] = serialize($user);
+            $_SESSION['user'] = serialize($user['user_data']);
+            $_SESSION['user_is_division_head'] = serialize($user['is_division_head']);
+            $_SESSION['user_division_data'] = serialize($user['division_data']);
             header('Location: ../users/index.php');
         }
     }else{

@@ -20,13 +20,13 @@ if(isset($_POST['btn_update_pic'])){
                 if($user->profile_picture && file_exists('../files/images/profile_pictures/' . $user->profile_picture)) unlink(__DIR__.'/../../../files/images/profile_pictures/'.$old_pic);
                 $return_message = ['success','Profile Picture updated successfully','check'];
                 $user->updateCurrentInstance();
-                $_SESSION['admin'] = serialize($user);
+                $_SESSION['user'] = serialize($user);
             }else{
                 unlink(__DIR__.'/../../../files/images/profile_pictures/'.$prof_pic);
-                $return_message = ['danger','something went wrong','ban'];
+                $return_message = ['danger','something went wrong1','ban'];
             }
         }else{
-            $return_message = ['danger','something went wrong','ban'];
+            $return_message = ['danger','something went wrong2','ban'];
         }
     }else{
         $return_message = ['danger','Please fix the errors', 'ban'];

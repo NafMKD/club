@@ -1,45 +1,48 @@
-<!-- post starts -->
-<div class="post">
-    <div class="post__avatar">
-        <img src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png" alt="" />
-    </div>
+<?php
 
-    <div class="post__body">
-        <div class="post__header">
-            <div class="post__headerText">
-                <h3>
-                    Somanath Goudar
-                    <span class="post__headerSpecial"><span class="material-icons post__badge"> verified </span>@somanathg</span>
-                </h3>
+use App\Helper\Formater;
+use App\Model\Event;
+
+$events = Event::getEventsForUser($user->id);
+
+?>
+
+<?php foreach ($events as $event) : ?>
+
+    <!-- post starts -->
+    <div class="post m-1 border-bottom" style="max-width: 611px;">
+        <div class="post__avatar">
+            <?php if ($event->hasDivision()->division_head && file_exists(__DIR__ . '/../../files/images/profile_pictures/' . $event->hasDivision()->division_head->profile_picture)) : ?>
+                <img src="<?= '../files/images/profile_pictures/' . $event->hasDivision()->division_head->profile_picture ?>" alt="" />
+            <?php else : ?>
+                <img src="../assets/dist/img/logo.jpg" alt="" />
+            <?php endif ?>
+        </div>
+
+        <div class="post__body">
+            <div class="post__header">
+                <div class="post__headerText">
+                    <h3>
+                        <?= $event->hasDivision()->name ?>
+                        <span class="post__headerSpecial"><?= Formater::formatDateLikeXDaysAgo($event->created_at) ?></span>
+                    </h3>
+                </div>
+                <div class="post__headerDescription">
+                    <p><?= ucfirst($event->title) ?></p>
+                    <p><?= $event->description ?></p>
+                </div>
             </div>
-            <div class="post__headerDescription">
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+            <?php if ($event->image_url && file_exists(__DIR__ . '/../../files/images/events/' . $event->image_url)) : ?>
+                <img src="<?= '../files/images/events/' . $event->image_url ?>" alt="post_img" />
+            <?php endif ?>
+            <div class="post__footer">
+                <span> Start Date : <?= Formater::formatDatePost($event->start_date) ?></span>
+                <?php if ($event->end_date) : ?>
+                    <span> End Date : <?= Formater::formatDatePost($event->end_date) ?> </span>
+                <?php endif ?>
             </div>
         </div>
-        <img src="https://www.focus2move.com/wp-content/uploads/2020/01/Tesla-Roadster-2020-1024-03.jpg" alt="" />
     </div>
-</div>
-<!-- post ends -->
+    <!-- post ends -->
 
-<!-- post starts -->
-<div class="post">
-    <div class="post__avatar">
-        <img src="https://i.pinimg.com/originals/a6/58/32/a65832155622ac173337874f02b218fb.png" alt="" />
-    </div>
-
-    <div class="post__body">
-        <div class="post__header">
-            <div class="post__headerText">
-                <h3>
-                    Somanath Goudar
-                    <span class="post__headerSpecial"><span class="material-icons post__badge"> verified </span>@somanathg</span>
-                </h3>
-            </div>
-            <div class="post__headerDescription">
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
-            </div>
-        </div>
-        <img src="https://www.focus2move.com/wp-content/uploads/2020/01/Tesla-Roadster-2020-1024-03.jpg" alt="" />
-    </div>
-</div>
-<!-- post ends -->
+<?php endforeach ?>

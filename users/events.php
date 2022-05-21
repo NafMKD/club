@@ -1,6 +1,10 @@
 <?php
 session_start();
 $events_page = 'active'; 
+include __DIR__ . '/../vendor/autoload.php';
+
+$user = unserialize($_SESSION['user']);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

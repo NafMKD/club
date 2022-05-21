@@ -1,6 +1,10 @@
 <?php
 session_start();
 $profile_page = 'active'; 
+include __DIR__ . '/../vendor/autoload.php';
+
+$user = unserialize($_SESSION['user']);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
