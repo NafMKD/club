@@ -174,4 +174,15 @@ class Attendance implements Model
         }
     }
 
+    /**
+     * get current user
+     * 
+     * @return ?User
+     */
+    public function getUser(): ?User
+    {
+        if($this->user_id)return User::find($this->user_id);
+        return null;
+    }
+
 }

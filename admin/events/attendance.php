@@ -1,5 +1,6 @@
 <?php
 
+use App\Helper\Validation;
 use App\Model\Attendance;
 use App\Model\Division;
 use App\Model\Event;
@@ -9,10 +10,10 @@ $event = Event::find($_GET['attendance']);
 $division = Division::find($event->division_id);
 
 $members = $event->getMemberForAttendance();
-
+$date = date('Y-m-d');
 
 if (isset($_POST['notattended'])) {
-    $date = date('Y-m-d');
+
 
     if (explode(' ', $event->start_date)[0] == $date) {
         $data = Attendance::create([
@@ -31,7 +32,6 @@ if (isset($_POST['notattended'])) {
 }
 
 if (isset($_POST['attended'])) {
-    $date = date('Y-m-d');
 
     if (explode(' ', $event->start_date)[0] == $date) {
         $data = Attendance::create([
@@ -76,35 +76,68 @@ if (isset($_POST['attended'])) {
             <dt class="col-sm-3">Members count : </dt>
             <dd class="col-sm-9"><?= count($division->findAllMembers()) ?></dd>
         </dl>
-        <table class="table table-bordered table-hover" id="table">
-            <thead>
-                <tr>
-                    <th style="width: 10px;">#</th>
-                    <th>Name</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $c = 1;
-                foreach ($members as $member) : ?>
-                    <form method="POST">
-                        <input name="user_id" value="<?= $member->id ?>" hidden>
+        <?php if (Validation::checkDateRange($date, $event->start_date)) : ?>
+            <table class="table table-bordered table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th style="width: 10px;">#</th>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $c = 1;
+                    foreach ($members as $member) : ?>
+                        <form method="POST">
+                            <input name="user_id" value="<?= $member->id ?>" hidden>
+                            <tr>
+                                <td><?= $c ?></td>
+                                <?php if ($member->userDetail) : ?>
+                                    <td><?= $member->userDetail->first_name . ' ' . $member->userDetail->last_name ?></td>
+                                <?php else : ?>
+                                    <td><?= $member->username ?></td>
+                                <?php endif; ?>
+                                <td>
+                                    <button type="submit" name="attended" class="btn btn-success btn-sm"><i class="fas fa-check "></i></button>
+                                    <button type="submit" name="notattended" class="btn btn-danger btn-sm"><i class="fas fa-times "></i></button>
+                                </td>
+                            </tr>
+                        </form>
+                    <?php $c++;
+                    endforeach ?>
+                </tbody>
+            </table>
+        <?php else : ?>
+            <table class="table table-bordered table-hover" id="table">
+                <thead>
+                    <tr>
+                        <th style="width: 10px;">#</th>
+                        <th>Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php $c = 1;
+                    foreach ($event->getAttendance() as $attendance) : ?>
                         <tr>
                             <td><?= $c ?></td>
-                            <?php if ($member->userDetail) : ?>
-                                <td><?= $member->userDetail->first_name . ' ' . $member->userDetail->last_name ?></td>
+                            <?php if ($attendance->getUser()->userDetail) : ?>
+                                <td><?= $attendance->getUser()->userDetail->first_name . ' ' . $attendance->getUser()->userDetail->last_name ?></td>
                             <?php else : ?>
-                                <td><?= $member->username ?></td>
+                                <td><?= $attendance->getUser()->username ?></td>
                             <?php endif; ?>
                             <td>
-                                <button type="submit" name="attended" class="btn btn-success btn-sm"><i class="fas fa-check "></i></button>
-                                <button type="submit" name="notattended" class="btn btn-danger btn-sm"><i class="fas fa-times "></i></button>
+                                <?php if ($attendance->is_attended == 1) : ?>
+                                    <span class="badge badge-success">Attended</span>
+                                <?php else : ?>
+                                    <span class="badge badge-danger">Not Attended</span>
+                                <?php endif; ?>
                             </td>
                         </tr>
-                    </form>
-                <?php $c++;
-                endforeach ?>
-            </tbody>
-        </table>
+                    <?php $c++;
+                    endforeach ?>
+                </tbody>
+            </table>
+        <?php endif ?>
     </div>
 </div>

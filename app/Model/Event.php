@@ -22,9 +22,8 @@ class Event implements Model
         public ?int $is_active,
         public ?string $created_at,
         public ?string $updated_at
-    ) 
-    {
-        if($id) $this->feed = Feed::findAllByEventId($id);
+    ) {
+        if ($id) $this->feed = Feed::findAllByEventId($id);
         return $this;
     }
     /**
@@ -59,7 +58,7 @@ class Event implements Model
     public static function find(int $id, bool $showAll = false): ?self
     {
         $sql = "SELECT * FROM events WHERE id = :id";
-        if(!$showAll) $sql .= " AND is_active = 1";
+        if (!$showAll) $sql .= " AND is_active = 1";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute([':id' => $id]);
         $data = $stmt->fetch();
@@ -89,7 +88,7 @@ class Event implements Model
     public static function findAll(bool $showAll = false): array
     {
         $sql = "SELECT * FROM events";
-        if(!$showAll) $sql .= " WHERE is_active = 1";
+        if (!$showAll) $sql .= " WHERE is_active = 1";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
         $data = $stmt->fetchAll();
@@ -119,7 +118,7 @@ class Event implements Model
      */
     public function save(): bool
     {
-        if($this->id) {
+        if ($this->id) {
             $sql = "UPDATE events SET title = :title, description = :description, division_id = :division_id, image_url = :image_url, start_date = :start_date, end_date = :end_date, is_public = :is_public, is_active = :is_active, updated_at = NOW() WHERE id = :id";
             $stmt = DB::getInstance()->prepare($sql);
             $stmt->execute([
@@ -159,7 +158,7 @@ class Event implements Model
      */
     public function delete(): bool
     {
-        if($this->id) {
+        if ($this->id) {
             $sql = "UPDATE events SET is_active = 0 WHERE id = :id";
             $stmt = DB::getInstance()->prepare($sql);
             $stmt->execute([':id' => $this->id]);
@@ -176,7 +175,7 @@ class Event implements Model
      */
     public function updateCurrentInstance(): bool
     {
-        if($this->id) {
+        if ($this->id) {
             $sql = "SELECT * FROM events WHERE id = :id";
             $stmt = DB::getInstance()->prepare($sql);
             $stmt->execute([':id' => $this->id]);
@@ -209,7 +208,7 @@ class Event implements Model
     public static function findAllByDivisionId(int $id, bool $showAll = false): array
     {
         $sql = "SELECT * FROM events WHERE division_id = :id";
-        if(!$showAll) $sql .= " AND is_active = 1";
+        if (!$showAll) $sql .= " AND is_active = 1";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute([':id' => $id]);
         $data = $stmt->fetchAll();
@@ -241,7 +240,7 @@ class Event implements Model
     public static function findAllByDateDescending(bool $showAll = false): array
     {
         $sql = "SELECT * FROM events";
-        if(!$showAll) $sql .= " WHERE is_active = 1";
+        if (!$showAll) $sql .= " WHERE is_active = 1";
         $sql .= " ORDER BY created_at DESC";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
@@ -272,7 +271,7 @@ class Event implements Model
      */
     public function hasDivision(): ?Division
     {
-        if($this->division_id) {
+        if ($this->division_id) {
             return Division::find($this->division_id);
         }
         return null;
@@ -287,7 +286,7 @@ class Event implements Model
     public static function getUpcomingEvents(bool $showAll = false): array
     {
         $sql = "SELECT * FROM events WHERE start_date >= NOW()";
-        if(!$showAll) $sql .= " AND is_active = 1";
+        if (!$showAll) $sql .= " AND is_active = 1";
         $sql .= " ORDER BY start_date ASC";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
@@ -321,7 +320,7 @@ class Event implements Model
     public static function getPublicEvents(bool $showAll = false): array
     {
         $sql = "SELECT * FROM events WHERE is_public = 1";
-        if(!$showAll) $sql .= " AND is_active = 1";
+        if (!$showAll) $sql .= " AND is_active = 1";
         $sql .= " ORDER BY start_date ASC";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
@@ -352,11 +351,11 @@ class Event implements Model
      * @param bool $showAll
      * @return self[]
      */
-    public static function getTodaysEvent(bool $showAll = false) : array
+    public static function getTodaysEvent(bool $showAll = false): array
     {
         $date = date('Y-m-d');
         $sql = "SELECT * FROM events WHERE start_date LIKE '%$date%'";
-        if(!$showAll) $sql .= " AND is_active = 1";
+        if (!$showAll) $sql .= " AND is_active = 1";
         $sql .= " ORDER BY start_date ASC";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute();
@@ -387,10 +386,10 @@ class Event implements Model
      * @param bool $showAll
      * @return User[]
      */
-    public function getMemberForAttendance(bool $showAll = false) : array
+    public function getMemberForAttendance(bool $showAll = false): array
     {
         $sql = "SELECT * FROM users WHERE id NOT IN (SELECT user_id FROM attendances WHERE event_id = :event_id) AND id IN (SELECT user_id FROM users_divisions WHERE division_id = (SELECT division_id FROM events WHERE id = :event_id))";
-        if(!$showAll) $sql .= " AND is_active = 1";
+        if (!$showAll) $sql .= " AND is_active = 1";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute(['event_id' => $this->id]);
         $data = $stmt->fetchAll();
@@ -410,10 +409,10 @@ class Event implements Model
      * @param bool $showAll
      * @return self[]
      */
-    public static function getEventsForUser(int $id, string $order = 'ASC', bool $showAll = false) : array
+    public static function getEventsForUser(int $id, string $order = 'ASC', bool $showAll = false): array
     {
         $sql = "SELECT * FROM events WHERE division_id IN (SELECT division_id FROM users_divisions WHERE user_id = :user_id)";
-        if(!$showAll) $sql .= " AND is_active = 1";
+        if (!$showAll) $sql .= " AND is_active = 1";
         $sql .= " ORDER BY start_date $order";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute(['user_id' => $id]);
@@ -446,10 +445,10 @@ class Event implements Model
      * @param bool $showAll
      * @return self[]
      */
-    public static function getUpcomingEventsForUser(int $id, string $order = 'ASC', bool $showAll = false) : array
+    public static function getUpcomingEventsForUser(int $id, string $order = 'ASC', bool $showAll = false): array
     {
         $sql = "SELECT * FROM events WHERE division_id IN (SELECT division_id FROM users_divisions WHERE user_id = :user_id) AND start_date >= NOW()";
-        if(!$showAll) $sql .= " AND is_active = 1";
+        if (!$showAll) $sql .= " AND is_active = 1";
         $sql .= " ORDER BY start_date $order";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute(['user_id' => $id]);
@@ -471,5 +470,37 @@ class Event implements Model
             );
         }
         return $events;
+    }
+
+    /**
+     * 
+     * get event attendance
+     * 
+     * @return Attendance[]
+     */
+    public function getAttendance(): array
+    {
+        // registering past attendance
+        $users = $this->getMemberForAttendance();
+        foreach ($users as $user) {
+            $att = Attendance::create(
+                [
+                    'user_id' => $user->id,
+                    'event_id' => $this->id,
+                    'is_attended' => 0,
+                    'is_active' => 1
+                ]
+            );
+            $att->save();
+        }
+        $sql = "SELECT * FROM attendances WHERE event_id = :event_id";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute(['event_id' => $this->id]);
+        $data = $stmt->fetchAll();
+        $attendances = [];
+        foreach ($data as $attendance) {
+            $attendances[] = Attendance::find($attendance['id']);
+        }
+        return $attendances;
     }
 }
