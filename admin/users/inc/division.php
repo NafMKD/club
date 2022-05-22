@@ -40,9 +40,9 @@ if (isset($_POST['btn_add_division'])) {
         </tr>
     </thead>
     <tbody>
-        <?php if ($user->division) : ?>
+        <?php if ($user->hasDivisions()) : ?>
             <?php $c = 1;
-            foreach ($user->division as $division) : 
+            foreach ($user->hasDivisions() as $division) : 
                 $progress = $user->getUserAttendanceProgress($division->id);
                 if($progress['all'] !== 0){
                     $progress = ($progress['attended'] * 100) / $progress['all'];

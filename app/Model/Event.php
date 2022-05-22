@@ -436,4 +436,40 @@ class Event implements Model
         }
         return $events;
     }
+
+    /**
+     * 
+     * get upcammings events for user
+     * 
+     * @param int $id
+     * @param string $order
+     * @param bool $showAll
+     * @return self[]
+     */
+    public static function getUpcomingEventsForUser(int $id, string $order = 'ASC', bool $showAll = false) : array
+    {
+        $sql = "SELECT * FROM events WHERE division_id IN (SELECT division_id FROM users_divisions WHERE user_id = :user_id) AND start_date >= NOW()";
+        if(!$showAll) $sql .= " AND is_active = 1";
+        $sql .= " ORDER BY start_date $order";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute(['user_id' => $id]);
+        $data = $stmt->fetchAll();
+        $events = [];
+        foreach ($data as $event) {
+            $events[] = new self(
+                $event['title'],
+                $event['description'],
+                $event['id'],
+                $event['division_id'],
+                $event['image_url'],
+                $event['start_date'],
+                $event['end_date'],
+                $event['is_public'],
+                $event['is_active'],
+                $event['created_at'],
+                $event['updated_at']
+            );
+        }
+        return $events;
+    }
 }

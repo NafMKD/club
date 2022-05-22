@@ -27,15 +27,18 @@ $user = unserialize($_SESSION['admin']);
 <div class="card m-1">
     <div class="card-header p-2">
         <ul class="nav nav-pills">
-            <li class="nav-item"><a class="nav-link <?php if(!isset($_GET['settings']) && !isset($_GET['profPic']) && !isset($_GET['password'])) echo 'active'; ?>" href="profile.php">Detail</a></li>
+            <li class="nav-item"><a class="nav-link <?php if(count($_GET) === 0) echo 'active'; ?>" href="profile.php">Detail</a></li>
+            <li class="nav-item"><a class="nav-link <?php if(isset($_GET['divisions'])) echo 'active'; ?>" href="?divisions">Divisions</a></li>
             <li class="nav-item"><a class="nav-link <?php if(isset($_GET['settings'])) echo 'active'; ?>" href="?settings">Settings</a></li>
             <li class="nav-item"><a class="nav-link <?php if(isset($_GET['profPic'])) echo 'active'; ?>" href="?profPic">Profile picture</a></li>
             <li class="nav-item"><a class="nav-link <?php if(isset($_GET['password'])) echo 'active'; ?>" href="?password">Password</a></li>
         </ul>
     </div><!-- /.card-header -->
     <div class="card-body" style="width: 611px;">
-        <?php if(!isset($_GET['settings']) && !isset($_GET['profPic']) && !isset($_GET['password'])): ?>
+        <?php if(count($_GET) === 0): ?>
             <?php include 'inc/detail.php'; ?>
+        <?php elseif(isset($_GET['divisions'])): ?>
+            <?php include 'inc/division.php'; ?>
         <?php elseif(isset($_GET['settings'])): ?>
             <?php include 'inc/setting.php'; ?>
         <?php elseif(isset($_GET['profPic'])): ?>

@@ -4,6 +4,8 @@ $feeds_page = 'active';
 include __DIR__ . '/../vendor/autoload.php';
 
 $user = unserialize($_SESSION['user']);
+$user_is_division_head = unserialize($_SESSION['user_is_division_head']);
+$user_division_data = unserialize($_SESSION['user_division_data']);
 
 ?>
 <!DOCTYPE html>

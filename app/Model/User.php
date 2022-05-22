@@ -8,7 +8,6 @@ use App\Database\DB;
 
 class User implements Model
 {
-    public array $division;
     public ?UserDetail $userDetail;
 
     public function __construct(
@@ -25,7 +24,6 @@ class User implements Model
         public ?string $updated_at
     ) 
     {
-        if($id) $this->division = UserDivision::findAllByUserId($id);
         if($id) $this->userDetail = UserDetail::findByUserId($id);
         return $this;
     }
@@ -227,7 +225,6 @@ class User implements Model
                 $this->deactivated_at = $data['deactivated_at'];
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
-                $this->division = UserDivision::findAllByUserId($this->id);
                 $this->userDetail = UserDetail::findByUserId($this->id);
                 return true;
             }
@@ -289,6 +286,18 @@ class User implements Model
         $data2 = $stmt2->fetch();
         
         return ['attended'=>$data[0], 'all'=>$data2[0]];
+    }
+
+    /**
+     * 
+     * get all user divisions
+     * 
+     * @return array
+     */
+    public function hasDivisions() : ?array
+    {
+        if($this->id) return UserDivision::findAllByUserId($this->id);
+        else return null;
     }
 
 }

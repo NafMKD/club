@@ -16,9 +16,9 @@ class Account
      * @param string $username
      * @param string $password
      * 
-     * @return User
+     * @return ?array
      */
-    public static function login(string $username, string $password): ?User
+    public static function login(string $username, string $password): ?array
     {
         $data = User::findByUsername($username);
         if ($data && $data->password == md5($password)) {
