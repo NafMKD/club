@@ -1,58 +1,19 @@
 <?php
 
-use App\Model\Attendance;
 use App\Model\Division;
-use App\Model\Event;
+use App\Model\User;
 
-$event = Event::find($_GET['attendance']);
-
-$division = Division::find($event->division_id);
-
-$members = $event->getMemberForAttendance();
-
-
-if (isset($_POST['notattended'])) {
-    $date = date('Y-m-d');
-
-    if (explode(' ', $event->start_date)[0] == $date) {
-        $data = Attendance::create([
-            'user_id' => (int) $_POST['user_id'],
-            'event_id' => $event->id,
-            'is_attended' => 0,
-            'is_active' => 1
-        ]);
-
-        if (!$data->save()) $return_message = ['danger', 'Something went wrong', 'ban'];
-
-        $members = $event->getMemberForAttendance();
-    } else {
-        $return_message = ['danger', 'Cannot take attendance today', 'ban'];
-    }
+if (!isset($_GET['attendance']) || $_GET['attendance'] == '') {
+    header('Location: ?members');
+    exit;
 }
 
-if (isset($_POST['attended'])) {
-    $date = date('Y-m-d');
-
-    if (explode(' ', $event->start_date)[0] == $date) {
-        $data = Attendance::create([
-            'user_id' => (int) $_POST['user_id'],
-            'event_id' => $event->id,
-            'is_attended' => 1,
-            'is_active' => 1
-        ]);
-
-        if (!$data->save()) $return_message = ['danger', 'Something went wrong', 'ban'];
-
-        $members = $event->getMemberForAttendance();
-    } else {
-        $return_message = ['danger', 'Cannot take attendance today', 'ban'];
-    }
-}
+$att_user = User::find($_GET['attendance']);
 
 ?>
 <div class="card m-1">
     <div class="card-header">
-        <h3 class="card-title">Members list:</h3>
+        <h3 class="card-title">Attendance list:</h3>
 
         <div class="card-tools">
             <div class="input-group input-group-sm" style="width: 150px;">
@@ -61,47 +22,40 @@ if (isset($_POST['attended'])) {
         </div>
     </div>
     <div class="card-body" style=" width: 611px;">
-        <?php if (isset($return_message)) : ?>
-            <div class="alert alert-<?= $return_message[0]; ?> alert-dismissible">
-                <i class="icon fas fa-<?= $return_message[2] ?>"></i>
-                <?= $return_message[1]; ?>
-            </div>
-        <?php endif ?>
-        <center>
-            <h3>Attendance</h3>
-        </center>
-        <dl class="row mt-4">
+        <dl class="row">
             <dt class="col-sm-3">Division Name : </dt>
-            <dd class="col-sm-9"><?= $division->name ?></dd>
-            <dt class="col-sm-3">Members count : </dt>
-            <dd class="col-sm-9"><?= count($division->findAllMembers()) ?></dd>
+            <dd class="col-sm-9"><?= $user_division_data->name ?></dd>
+            <dt class="col-sm-3">Member Name : </dt>
+            <dd class="col-sm-9">
+                <?php if ($att_user->userDetail) : ?>
+                    <?= $att_user->userDetail->first_name . ' ' . $att_user->userDetail->last_name ?>
+                <?php else : ?>
+                    <?= $att_user->username ?>
+                <?php endif; ?>
+            </dd>
         </dl>
         <table class="table table-bordered table-hover" id="table">
             <thead>
                 <tr>
                     <th style="width: 10px;">#</th>
-                    <th>Name</th>
-                    <th>Action</th>
+                    <th>Event</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 <?php $c = 1;
-                foreach ($members as $member) : ?>
-                    <form method="POST">
-                        <input name="user_id" value="<?= $member->id ?>" hidden>
-                        <tr>
-                            <td><?= $c ?></td>
-                            <?php if ($member->userDetail) : ?>
-                                <td><?= $member->userDetail->first_name . ' ' . $member->userDetail->last_name ?></td>
+                foreach ($att_user->getAttendanceForDivision($user_division_data->id) as $att) : ?>
+                    <tr>
+                        <td><?= $c ?></td>
+                        <td><?= ucwords($att->getEvent()->title) ?></td>
+                        <td>
+                            <?php if ($att->is_attended == 1) : ?>
+                                <span class="badge badge-success">Attended</span>
                             <?php else : ?>
-                                <td><?= $member->username ?></td>
+                                <span class="badge badge-danger">Not Attended</span>
                             <?php endif; ?>
-                            <td>
-                                <button type="submit" name="attended" class="btn btn-success btn-sm"><i class="fas fa-check "></i></button>
-                                <button type="submit" name="notattended" class="btn btn-danger btn-sm"><i class="fas fa-times "></i></button>
-                            </td>
-                        </tr>
-                    </form>
+                        </td>
+                    </tr>
                 <?php $c++;
                 endforeach ?>
             </tbody>

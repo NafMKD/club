@@ -19,3 +19,7 @@
 <link rel="stylesheet" href="../assets/overlayScrollbars/css/OverlayScrollbars.min.css" />
 <!-- Tempusdominus Bootstrap 4 -->
 <link rel="stylesheet" href="../assets/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+<!-- Sweetalert2 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.14/dist/sweetalert2.min.css">
+<!-- Sweetalert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.14/dist/sweetalert2.all.min.js"></script>

@@ -36,6 +36,7 @@ $user_division_data = unserialize($_SESSION['user_division_data']);
                     <li class="nav-item"><a class="nav-link <?php if (isset($_GET['members']) || count($_GET) === 0) echo 'active' ?>" href="?members">Members</a></li>
                     <li class="nav-item"><a class="nav-link <?php if (isset($_GET['events'])) echo 'active' ?>" href="?events">Events</a></li>
                     <li class="nav-item"><a class="nav-link <?php if (isset($_GET['settings'])) echo 'active' ?>" href="?settings">Settings</a></li>
+                    <li class="nav-item"><a class="nav-link <?php if (isset($_GET['attendance'])) echo 'active' ?>" href="#">Attendance</a></li>
                 </ul>
             </div>
             <div class="card-body">
@@ -43,6 +44,8 @@ $user_division_data = unserialize($_SESSION['user_division_data']);
                     <?php include 'divisions/members.php'; ?>
                 <?php elseif (isset($_GET['events'])) : ?>
                     <?php include 'divisions/events.php'; ?>
+                <?php elseif (isset($_GET['attendance'])) : ?>
+                    <?php include 'divisions/inc/attendance.php'; ?>
                 <?php elseif (isset($_GET['settings'])) : ?>
                     <?php include 'divisions/setting.php'; ?>
                 <?php endif ?>
@@ -58,6 +61,7 @@ $user_division_data = unserialize($_SESSION['user_division_data']);
         <script>
             $(document).ready(function() {
                 $('#modal-add-event').modal('show');
+                $('#add_member').modal('show');
             });
         </script>
     <?php endif ?>

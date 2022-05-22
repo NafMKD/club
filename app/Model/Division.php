@@ -256,4 +256,25 @@ class Division implements Model
         }
         return null;
     }
+
+    /**
+     * 
+     * get users for registration
+     * 
+     * @param bool $showAll
+     * @return self[]
+     */
+    public function findAllUserToAdd( bool $showAll = false): array
+    {
+        $sql = "SELECT * FROM users WHERE id NOT IN (SELECT user_id FROM users_divisions WHERE division_id = :division_id)";
+        if(!$showAll) $sql .= " AND is_active = 1";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute([':division_id' => $this->id]);
+        $data = $stmt->fetchAll();
+        $result = [];
+        foreach($data as $row) {
+            $result[] = User::find($row['id']);
+        }
+        return $result;
+    }
 }
