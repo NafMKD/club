@@ -41,7 +41,7 @@
                         </div>
                     </td>
                     <td>
-                        <a href="?" class="btn btn-primary btn-xs"><i class="fas fa-edit"></i> </a>
+                        <a href="divisions.php?attendance=<?= $division->id?>/<?=$user->id?>" class="btn btn-primary btn-xs"><i class="fas fa-edit"></i> </a>
                     </td>
                 </tr>
             <?php $c++;
