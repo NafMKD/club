@@ -4,6 +4,49 @@ use App\Model\User;
 
 $users = User::findAll();
 
+if (isset($_GET['delete'])) {
+    if (isset($_GET['is_confirmed']) && $_GET['is_confirmed'] == 'yes'){
+        $user_delete = User::find($_GET['delete']);
+        if($user_delete){
+            $user_delete->delete();
+            echo '<script>
+                Swal.fire({
+                    title: "Success",
+                    text: "User has been removed.",
+                    type: "success",
+                    confirmButtonText: "OK"
+                }).then(function() {
+                    window.location = "?list";
+                });
+            </script>';
+        }else{
+            echo '<script>
+                Swal.fire({
+                    title: "Error!",
+                    text: "user not found!",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });</script>';
+        }
+    } else {
+        echo '<script>
+            Swal.fire({
+                title: "Are you sure?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.value) {
+                    window.location.href = "?list&delete='.$_GET['delete'].'&is_confirmed=yes";
+                }else{
+                    window.location.href = "?list";
+                }
+            });</script>';
+    }
+}
+
 ?>
 <div class="card m-1">
     <div class="card-header">
@@ -35,7 +78,7 @@ $users = User::findAll();
                         <?php endif;?>
                         <td>
                             <a href="?view=<?= $user->id ?>" class="btn btn-info btn-xs"><i class="fas fa-eye mr-1"></i>View</a>
-                            <a href="?delete=<?= $user->id ?>" class="btn btn-danger btn-xs"><i class="fas fa-trash mr-1"></i>Delete</a>
+                            <a href="?list&delete=<?= $user->id ?>" class="btn btn-danger btn-xs"><i class="fas fa-trash mr-1"></i>Delete</a>
                         </td>
                     </tr>
                 <?php $c++; endforeach ?>

@@ -21,6 +21,50 @@ if (isset($_POST['btn_add_division'])) {
         $return_message = ['danger', 'something went wrong', 'ban'];
     }
 }
+
+if (isset($_GET['delete'])) {
+    if (isset($_GET['is_confirmed']) && $_GET['is_confirmed'] == 'yes'){
+        $user_division = UserDivision::findByUserIdAndDivisionId($_GET['view'],$_GET['delete']);
+        if($user_division){
+            $user_division->delete();
+            echo '<script>
+                Swal.fire({
+                    title: "Success",
+                    text: "User has been removed.",
+                    type: "success",
+                    confirmButtonText: "OK"
+                }).then(function() {
+                    window.location = "?view='. $_GET['view'] .'&divisions";
+                });
+            </script>';
+        }else{
+            echo '<script>
+                Swal.fire({
+                    title: "Error!",
+                    text: "user not found!",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });</script>';
+        }
+    } else {
+        echo '<script>
+            Swal.fire({
+                title: "Are you sure?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.value) {
+                    window.location.href = "?view='. $_GET['view'] .'&divisions&delete='.$_GET['delete'].'&is_confirmed=yes";
+                }else{
+                    window.location.href = "?view='. $_GET['view'] .'&divisions";
+                }
+            });</script>';
+    }
+}
+
 ?>
 <?php if (isset($return_message)) : ?>
     <div class="alert alert-<?= $return_message[0]; ?> alert-dismissible">
