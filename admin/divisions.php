@@ -20,7 +20,7 @@ $divisions = \App\Model\Division::findAll();
     <div class="feed">
         <div class="feed__header">
             <h2 class="float-left">Divisions</h2>
-            <?php if (isset($_GET['add']) || isset($_GET['edit']) || isset($_GET['members'])) : ?>
+            <?php if (isset($_GET['add']) || isset($_GET['edit']) || isset($_GET['members']) || isset($_GET['attendance'])) : ?>
                 <a href="?list" class="float-right material-icons" style="cursor: pointer;">arrow_back</a>
             <?php else : ?>
                 <a href="?add" class="float-right material-icons" style="cursor: pointer;">add_circle</a>
@@ -39,6 +39,8 @@ $divisions = \App\Model\Division::findAll();
             <?php include 'divisions/add.php' ?>
         <?php elseif (isset($_GET['members'])) : ?>
             <?php include 'divisions/member.php' ?>
+        <?php elseif (isset($_GET['attendance'])) : ?>
+            <?php include 'divisions/attendance.php' ?>
         <?php elseif (isset($_GET['list']) || count($_GET) == 0) : ?>
             <?php include 'divisions/list.php' ?>
         <?php endif ?>

@@ -300,4 +300,25 @@ class User implements Model
         else return null;
     }
 
+    /**
+     * 
+     * get attendace for division
+     * 
+     * @param int $division_id
+     * @return array
+     */
+    public function getAttendanceForDivision(int $division_id, bool $showAll = false) : array
+    {
+        $sql = "SELECT * FROM attendances WHERE event_id IN (SELECT id FROM events WHERE division_id = :division_id) AND user_id = :user_id";
+        if(!$showAll) $sql .= " AND is_active = 1";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute([':division_id' => $division_id, 'user_id' => $this->id]);
+        $data = $stmt->fetchAll();
+        $attendances = [];
+        foreach($data as $attendance) {
+            $attendances[] = Attendance::find($attendance['id']);
+        }
+        return $attendances;
+    }
+
 }

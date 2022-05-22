@@ -185,4 +185,16 @@ class Attendance implements Model
         return null;
     }
 
+
+    /**
+     * get current event
+     * 
+     * @return ?Event
+     */
+    public function getEvent(): ?Event
+    {
+        if($this->event_id)return Event::find($this->event_id);
+        return null;
+    }
+
 }

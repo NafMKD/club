@@ -182,4 +182,35 @@ class UserDivision implements Model
         return $result;
     }
 
+    /**
+     * 
+     * get bu user id and division id
+     * 
+     * @param int $user_id
+     * @param int $division_id
+     * @return self
+     */
+    public static function findByUserIdAndDivisionId(int $user_id, int $division_id, bool $showAll = false): ?self
+    {
+        $sql = "SELECT * FROM users_divisions WHERE user_id = :user_id AND division_id = :division_id";
+        if(!$showAll) $sql .= " AND is_active = 1";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute([
+            ':user_id' => $user_id,
+            ':division_id' => $division_id,
+        ]);
+        $data = $stmt->fetch();
+        if($data) {
+            return new self(
+                $data['user_id'],
+                $data['division_id'],
+                $data['is_active'],
+                $data['id'],
+                $data['created_at'],
+                $data['updated_at'],
+            ); 
+        }
+        return null;
+    }
+
 }
