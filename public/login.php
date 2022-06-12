@@ -34,19 +34,27 @@ if(isset($_POST['btn_signup'])){
     $password_confirmation = $_POST['new_password_confirmation'];
    
     if($password == $password_confirmation){
-        $user = \App\Model\User::create([
-            'username' => $username,
-            'password' => $password,
-            'is_superuser' => 0,
-            'is_president'=> 0,
-            'profile_picture'=> null,
-            'is_active'=> 1
-        ]);
-        if($user->save()){
-            $_SESSION['user'] = serialize($user);
-            header('Location: ../users/index.php');
+        $user_check = \App\Model\User::isUsernameTaken($username);
+        if($user_check){
+            $err_message_signup = 'Username is already taken';
         }else{
-            $err_message_signup = 'Something went wrong';
+            $user = \App\Model\User::create([
+                'username' => $username,
+                'password' => $password,
+                'is_superuser' => 0,
+                'is_president'=> 0,
+                'profile_picture'=> null,
+                'is_active'=> 1
+            ]);
+            if($user->save()){
+                $user_login = \App\Account::login($username, $password);
+                $_SESSION['user'] = serialize($user_login['user_data']);
+                $_SESSION['user_is_division_head'] = serialize($user_login['is_division_head']);
+                $_SESSION['user_division_data'] = serialize($user_login['division_data']);
+                header('Location: ../users/index.php');
+            }else{
+                $err_message_signup = 'Something went wrong';
+            }
         }
     }else{
         $err_message_signup = 'Password does not match';
