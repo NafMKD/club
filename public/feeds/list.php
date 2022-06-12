@@ -4,7 +4,7 @@ use App\Helper\Formater;
 use App\Helper\PostPicture;
 use App\Model\Feed;
 
-$feeds = Feed::findAll();
+$feeds = Feed::findAllFeedView();
 
 ?>
 <?php foreach ($feeds as $feed) : $file_count = count($feed->feed_file);?>

@@ -6,6 +6,12 @@ include __DIR__ . '/../vendor/autoload.php';
 $user = unserialize($_SESSION['user']);
 $user_is_division_head = unserialize($_SESSION['user_is_division_head']);
 $user_division_data = unserialize($_SESSION['user_division_data']);
+$check = $user_division_data === null;
+
+if($check) {
+    header('Location: ./');
+    exit;
+}
 
 ?>
 <!DOCTYPE html>
@@ -37,6 +43,7 @@ $user_division_data = unserialize($_SESSION['user_division_data']);
                     <li class="nav-item"><a class="nav-link <?php if (isset($_GET['events'])) echo 'active' ?>" href="?events">Events</a></li>
                     <li class="nav-item"><a class="nav-link <?php if (isset($_GET['settings'])) echo 'active' ?>" href="?settings">Settings</a></li>
                     <li class="nav-item"><a class="nav-link <?php if (isset($_GET['attendance'])) echo 'active' ?>" href="#">Attendance</a></li>
+                    <li class="nav-item"><a class="nav-link <?php if (isset($_GET['takeattendance'])) echo 'active' ?>" href="#">Take Attendance</a></li>
                 </ul>
             </div>
             <div class="card-body">
@@ -46,6 +53,8 @@ $user_division_data = unserialize($_SESSION['user_division_data']);
                     <?php include 'divisions/events.php'; ?>
                 <?php elseif (isset($_GET['attendance'])) : ?>
                     <?php include 'divisions/inc/attendance.php'; ?>
+                <?php elseif (isset($_GET['takeattendance'])) : ?>
+                    <?php include 'divisions/inc/takeattendance.php'; ?>
                 <?php elseif (isset($_GET['settings'])) : ?>
                     <?php include 'divisions/setting.php'; ?>
                 <?php endif ?>

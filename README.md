@@ -15,7 +15,11 @@ This is a club management system for CSEC students. and it is a simple and easy 
 
 ## TEAM MEMBERS
 
-1. [Farhan ]()
+1. [Farhan Mubarek]()
 2. [Leul Dejene ]()
 3. [Mohammad Ali ]()
 4. [Nafiyad Menberu ]()
+
+## INSTALLATION
+
+#### STEP 1:

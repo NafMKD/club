@@ -208,6 +208,35 @@ class Feed implements Model
     }
 
     /**
+     * get all records for feed view
+     * 
+     * @return self[]
+     */
+    public static function findAllFeedView(string $order = 'DESC', bool $showAll = false): array
+    {
+        $sql = "SELECT * FROM feeds";
+        if(!$showAll) $sql .= " WHERE is_active = 1";
+        $sql .= " ORDER BY created_at $order";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute();
+        $data = $stmt->fetchAll();
+        $feeds = [];
+        foreach ($data as $feed) {
+            $feeds[] = new self(
+                $feed['user_id'],
+                $feed['title'],
+                $feed['description'],
+                $feed['is_active'],
+                $feed['id'],
+                $feed['event_id'],
+                $feed['created_at'],
+                $feed['updated_at']
+            );
+        }
+        return $feeds;
+    }
+
+    /**
      * 
      * has user
      * 

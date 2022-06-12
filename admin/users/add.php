@@ -49,7 +49,7 @@ if(isset($_POST['btn_add_user'])){
         $user = User::create(
             [
                 'username' => $username,
-                'password' => password_hash($password, PASSWORD_DEFAULT),
+                'password' => $password,
                 'is_superuser' => $is_superuser,
                 'is_president' => $is_president,
                 'profile_picture' => $prof_pic,
@@ -89,12 +89,12 @@ if(isset($_POST['btn_add_user'])){
         </div>
         <div class="form-group">
             <label>Password:</label>
-            <input name="password" type="text" class="form-control" placeholder="Enter password">
+            <input name="password" type="password" class="form-control" placeholder="Enter password">
             <span class="text-danger"><?php if(isset($errors['password'])) echo $errors['password']; ?></span>
         </div>
         <div class="form-group">
             <label>Password (again):</label>
-            <input name="password_confirmation" type="text" class="form-control" placeholder="Enter password">
+            <input name="password_confirmation" type="password" class="form-control" placeholder="Enter password">
             <span class="text-danger"><?php if(isset($errors['password_confirmation'])) echo $errors['password_confirmation']; ?></span>
         </div>
         <div class="form-group clearfix">

@@ -8,7 +8,6 @@
             <th style="width: 10px">#</th>
             <th>Name</th>
             <th>Progress</th>
-            <th style="width: 40px">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -18,6 +17,7 @@
                 $progress = $user->getUserAttendanceProgress($division->id);
                 if($progress['all'] !== 0){
                     $progress = ($progress['attended'] * 100) / $progress['all'];
+                    if($progress === 0 ) $progress++;
                 }else{
                     $progress = 100;
                 }
@@ -39,9 +39,6 @@
                         <div class="progress progress-xs">
                             <div class="progress-bar bg-<?= $progress_calss ?>" style="width: <?= $progress ?>%"></div>
                         </div>
-                    </td>
-                    <td>
-                        <a href="?" class="btn btn-primary btn-xs"><i class="fas fa-edit"></i> </a>
                     </td>
                 </tr>
             <?php $c++;

@@ -381,6 +381,42 @@ class Event implements Model
 
     /**
      * 
+     * get today's events for single user
+     * 
+     * @param int $id
+     * @param bool $showAll
+     * @return self[]
+     */
+    public static function getTodaysEventForUser(int $id,bool $showAll = false): array
+    {
+        $date = date('Y-m-d');
+        $sql = "SELECT * FROM events WHERE start_date LIKE '%$date%' AND division_id IN (SELECT division_id FROM users_divisions WHERE user_id = :user_id)";
+        if (!$showAll) $sql .= " AND is_active = 1";
+        $sql .= " ORDER BY start_date ASC";
+        $stmt = DB::getInstance()->prepare($sql);
+        $stmt->execute(['user_id' => $id]);
+        $data = $stmt->fetchAll();
+        $events = [];
+        foreach ($data as $event) {
+            $events[] = new self(
+                $event['title'],
+                $event['description'],
+                $event['id'],
+                $event['division_id'],
+                $event['image_url'],
+                $event['start_date'],
+                $event['end_date'],
+                $event['is_public'],
+                $event['is_active'],
+                $event['created_at'],
+                $event['updated_at']
+            );
+        }
+        return $events;
+    }
+
+    /**
+     * 
      * get members for attendance
      * 
      * @param bool $showAll
@@ -475,25 +511,29 @@ class Event implements Model
     /**
      * 
      * get event attendance
+     * @param bool $showAll
      * 
      * @return Attendance[]
      */
-    public function getAttendance(): array
+    public function getAttendance(bool $showAll = false): array
     {
-        // registering past attendance
-        $users = $this->getMemberForAttendance();
-        foreach ($users as $user) {
-            $att = Attendance::create(
-                [
-                    'user_id' => $user->id,
-                    'event_id' => $this->id,
-                    'is_attended' => 0,
-                    'is_active' => 1
-                ]
-            );
-            $att->save();
+        // registering past attendance if event is passes
+        if(date($this->start_date) < date('Y-m-d h:i:s')){
+            $users = $this->getMemberForAttendance();
+            foreach ($users as $user) {
+                $att = Attendance::create(
+                    [
+                        'user_id' => $user->id,
+                        'event_id' => $this->id,
+                        'is_attended' => 0,
+                        'is_active' => 1
+                    ]
+                );
+                $att->save();
+            }
         }
         $sql = "SELECT * FROM attendances WHERE event_id = :event_id";
+        if (!$showAll) $sql .= " AND is_active = 1";
         $stmt = DB::getInstance()->prepare($sql);
         $stmt->execute(['event_id' => $this->id]);
         $data = $stmt->fetchAll();

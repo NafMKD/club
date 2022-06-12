@@ -6,6 +6,49 @@ use App\Model\Event;
 
 $events = Event::findAllByDivisionId($user_division_data->id);
 
+if (isset($_GET['delete'])) {
+    if (isset($_GET['is_confirmed']) && $_GET['is_confirmed'] == 'yes') {
+        $delete_event = Event::find($_GET['delete']);
+        if ($delete_event) {
+            $delete_event->delete();
+            echo '<script>
+                Swal.fire({
+                    title: "Success",
+                    text: "User has been removed.",
+                    type: "success",
+                    confirmButtonText: "OK"
+                }).then(function() {
+                    window.location = "?events";
+                });
+            </script>';
+        } else {
+            echo '<script>
+                Swal.fire({
+                    title: "Error!",
+                    text: "user not found!",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });</script>';
+        }
+    } else {
+        echo '<script>
+            Swal.fire({
+                title: "Are you sure?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.value) {
+                    window.location.href = "?events&delete=' . $_GET['delete'] . '&is_confirmed=yes";
+                }else{
+                    window.location.href = "?events";
+                }
+            });</script>';
+    }
+}
+
 if (isset($_POST['btn_add_event'])) {
     $division = (int) $user_division_data->id;
     $title = $_POST['title'];
@@ -57,13 +100,12 @@ if (isset($_POST['btn_add_event'])) {
 }
 
 ?>
-<?php if(count($_GET) === 1): ?>
 <div class="card m-1">
     <div class="card-header">
         <h3 class="card-title">Event list:</h3>
 
         <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-add-event">
+            <button type="button" class="btn btn-tool text-primary" data-toggle="modal" data-target="#modal-add-event">
                 <i class="fas fa-plus"></i> Add Event</button>
         </div>
     </div>
@@ -85,10 +127,10 @@ if (isset($_POST['btn_add_event'])) {
                 foreach ($events as $event) : ?>
                     <tr>
                         <td><?= $c ?></td>
-                        <td><?= $event->title ?></td>
+                        <td><?= ucfirst($event->title) ?></td>
                         <td>
-                            <a href="?events&attendance=<?= $event->id ?>" class="btn btn-primary btn-xs"><i class="fas fa-edit mr-1"></i> Attendace</a>
-                            <a href="?" class="btn btn-danger btn-xs"><i class="fas fa-trash mr-1"></i> Remove</a>
+                            <a href="?takeattendance=<?= $event->id ?>" class="btn btn-primary btn-xs"><i class="fas fa-edit mr-1"></i> Attendace</a> 
+                            <a href="?events&delete=<?= $event->id ?>" class="btn btn-danger btn-xs"><i class="fas fa-trash mr-1"></i> Remove</a>
                         </td>
                     </tr>
                 <?php $c++;
@@ -109,7 +151,7 @@ if (isset($_POST['btn_add_event'])) {
             </div>
             <form method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
-                    <?php if(isset($return_message)): ?>
+                    <?php if (isset($return_message)) : ?>
                         <div class="alert alert-<?= $return_message[0] ?> alert-dismissible">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                             <i class="icon fas fa-<?= $return_message[2] ?>"></i> <?= $return_message[1] ?>
@@ -171,6 +213,3 @@ if (isset($_POST['btn_add_event'])) {
         </div>
     </div>
 </div>
-<?php elseif(isset($_GET['attendance'])): ?>
-    <?php include 'inc/attendance.php' ?>
-<?php endif ?>

@@ -2,6 +2,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- local botstap and jquery -->
+<script src="../../../club/assets/jquery/jquery.min.js"></script>
+<script src="../../../club/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../assets/dist/js/adminlte.js"></script>
 <!-- Select2 -->

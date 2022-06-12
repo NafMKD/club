@@ -35,7 +35,7 @@ $todays = Event::getTodaysEvent();
             <div class="callout callout-info">
                 <h5><?= ucfirst($upcomming->title) ?></h5>
 
-                <p>at <?= Formater::formatDatePost($upcomming->start_date) ?></p>
+                <p>on <?= Formater::formatDatePost($upcomming->start_date) ?> (<?= str_replace('ago', 'left',Formater::formatDateLikeXDaysAgo($upcomming->start_date)) ?>)</p>
             </div>
         <?php endforeach ?>
 

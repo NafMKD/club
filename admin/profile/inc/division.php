@@ -18,6 +18,7 @@
                 $progress = $user->getUserAttendanceProgress($division->id);
                 if($progress['all'] !== 0){
                     $progress = ($progress['attended'] * 100) / $progress['all'];
+                    if($progress == 0) $progress++;
                 }else{
                     $progress = 100;
                 }

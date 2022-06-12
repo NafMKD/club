@@ -1,5 +1,13 @@
 <?php 
 
+if(isset($_SESSION['user'])){
+    header('Location: ../users/index.php');
+}
+
+if(isset($_SESSION['admin'])){
+    header('Location: ../admin/index.php');
+}
+
 
 if(isset($_POST['btn_signin'])){
     $username = $_POST['username'];

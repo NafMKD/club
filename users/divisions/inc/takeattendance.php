@@ -5,7 +5,17 @@ use App\Model\Attendance;
 use App\Model\Division;
 use App\Model\Event;
 
-$event = Event::find($_GET['attendance']);
+if(! isset($_GET['takeattendance']) || $_GET['takeattendance'] == ''){
+    header('Location: ?events');
+    exit;
+}
+
+$event = Event::find($_GET['takeattendance']);
+
+if($user_division_data->id !== $event->division_id){
+    header('Location: ?events');
+    exit;
+}
 
 $division = Division::find($event->division_id);
 
