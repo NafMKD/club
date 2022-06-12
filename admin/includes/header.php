@@ -24,3 +24,4 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.14/dist/sweetalert2.min.css">
 <!-- Sweetalert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.14/dist/sweetalert2.all.min.js"></script>
+<link rel="icon" href="../assets/dist/img/logo.jpg">

@@ -14,3 +14,4 @@
 <link rel="stylesheet" href="../assets/overlayScrollbars/css/OverlayScrollbars.min.css" />
 <!-- Tempusdominus Bootstrap 4 -->
 <link rel="stylesheet" href="../assets/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+<link rel="icon" href="../assets/dist/img/logo.jpg">
