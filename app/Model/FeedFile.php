@@ -17,7 +17,6 @@ class FeedFile implements Model
         public ?string $updated_at
     ) 
     {   
-        return $this;
     }
     /**
      * create new instance
@@ -28,9 +27,9 @@ class FeedFile implements Model
     public static function create(array $data): self
     {
         return new self(
-            $data['feed_id'],
+            DbCast::int($data['feed_id'] ?? 0),
             $data['file_url'],
-            $data['is_active'],
+            DbCast::int($data['is_active'] ?? 0),
             null,
             null,
             null
@@ -52,12 +51,12 @@ class FeedFile implements Model
         $data = $stmt->fetch();
         if($data){
             return new self(
-                $data['feed_id'],
+                DbCast::int($data['feed_id'] ?? 0),
                 $data['file_url'],
-                $data['is_active'],
-                $data['id'],
-                $data['created_at'],
-                $data['updated_at']
+                DbCast::int($data['is_active'] ?? 0),
+                DbCast::intOrNull($data['id'] ?? null),
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null
             );
         }
         return null;
@@ -78,12 +77,12 @@ class FeedFile implements Model
         $feedFiles = [];
         foreach($data as $feedFileData){
             $feedFiles[] = new self(
-                $feedFileData['feed_id'],
+                DbCast::int($feedFileData['feed_id'] ?? 0),
                 $feedFileData['file_url'],
-                $feedFileData['is_active'],
-                $feedFileData['id'],
-                $feedFileData['created_at'],
-                $feedFileData['updated_at']
+                DbCast::int($feedFileData['is_active'] ?? 0),
+                DbCast::intOrNull($feedFileData['id'] ?? null),
+                $feedFileData['created_at'] ?? null,
+                $feedFileData['updated_at'] ?? null
             );
         }
         return $feedFiles;
@@ -149,9 +148,9 @@ class FeedFile implements Model
             $stmt->execute([':id' => $this->id]);
             $data = $stmt->fetch();
             if($data){
-                $this->feed_id = $data['feed_id'];
+                $this->feed_id = DbCast::int($data['feed_id'] ?? 0);
                 $this->file_url = $data['file_url'];
-                $this->is_active = $data['is_active'];
+                $this->is_active = DbCast::int($data['is_active'] ?? 0);
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
                 return true;
@@ -177,12 +176,12 @@ class FeedFile implements Model
         $feedFiles = [];
         foreach($data as $feedFileData){
             $feedFiles[] = new self(
-                $feedFileData['feed_id'],
+                DbCast::int($feedFileData['feed_id'] ?? 0),
                 $feedFileData['file_url'],
-                $feedFileData['is_active'],
-                $feedFileData['id'],
-                $feedFileData['created_at'],
-                $feedFileData['updated_at']
+                DbCast::int($feedFileData['is_active'] ?? 0),
+                DbCast::intOrNull($feedFileData['id'] ?? null),
+                $feedFileData['created_at'] ?? null,
+                $feedFileData['updated_at'] ?? null
             );
         }
         return $feedFiles;

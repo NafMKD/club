@@ -18,7 +18,6 @@ class UserDivision implements Model
         public ?string $updated_at
     ) 
     {
-        return $this;
     }
     /**
      * create new instance
@@ -29,9 +28,9 @@ class UserDivision implements Model
     public static function create(array $data): self
     {
         return new self(
-            $data['user_id'],
-            $data['division_id'],
-            $data['is_active'],
+            DbCast::int($data['user_id'] ?? 0),
+            DbCast::int($data['division_id'] ?? 0),
+            DbCast::int($data['is_active'] ?? 0),
             null,
             null,
             null,
@@ -53,12 +52,12 @@ class UserDivision implements Model
         $data = $stmt->fetch();
         if($data) {
             return new self(
-                $data['user_id'],
-                $data['division_id'],
-                $data['is_active'],
-                $data['id'],
-                $data['created_at'],
-                $data['updated_at'],
+                DbCast::int($data['user_id'] ?? 0),
+                DbCast::int($data['division_id'] ?? 0),
+                DbCast::int($data['is_active'] ?? 0),
+                DbCast::intOrNull($data['id'] ?? null),
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null,
             ); 
         }
         return null;
@@ -79,12 +78,12 @@ class UserDivision implements Model
         $result = [];
         foreach($data as $row) {
             $result[] = new self(
-                $row['user_id'],
-                $row['division_id'],
-                $row['is_active'],
-                $row['id'],
-                $row['created_at'],
-                $row['updated_at'],
+                DbCast::int($row['user_id'] ?? 0),
+                DbCast::int($row['division_id'] ?? 0),
+                DbCast::int($row['is_active'] ?? 0),
+                DbCast::intOrNull($row['id'] ?? null),
+                $row['created_at'] ?? null,
+                $row['updated_at'] ?? null,
             );
         }
         return $result;
@@ -150,9 +149,9 @@ class UserDivision implements Model
             $stmt->execute([':id' => $this->id]);
             $data = $stmt->fetch();
             if($data) {
-                $this->user_id = $data['user_id'];
-                $this->division_id = $data['division_id'];
-                $this->is_active = $data['is_active'];
+                $this->user_id = DbCast::int($data['user_id'] ?? 0);
+                $this->division_id = DbCast::int($data['division_id'] ?? 0);
+                $this->is_active = DbCast::int($data['is_active'] ?? 0);
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
                 return true;
@@ -202,12 +201,12 @@ class UserDivision implements Model
         $data = $stmt->fetch();
         if($data) {
             return new self(
-                $data['user_id'],
-                $data['division_id'],
-                $data['is_active'],
-                $data['id'],
-                $data['created_at'],
-                $data['updated_at'],
+                DbCast::int($data['user_id'] ?? 0),
+                DbCast::int($data['division_id'] ?? 0),
+                DbCast::int($data['is_active'] ?? 0),
+                DbCast::intOrNull($data['id'] ?? null),
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null,
             ); 
         }
         return null;

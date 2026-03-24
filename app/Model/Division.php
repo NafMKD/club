@@ -22,9 +22,12 @@ class Division implements Model
 
     ) 
     {
-        if($division_head_id) $this->division_head = User::find($division_head_id);
-        if($id) $this->event = Event::findAllByDivisionId($id);
-        return $this;
+        if ($division_head_id !== null && $division_head_id !== 0) {
+            $this->division_head = User::find($division_head_id);
+        }
+        if ($id !== null && $id !== 0) {
+            $this->event = Event::findAllByDivisionId($id);
+        }
     }
     /**
      * create new instance
@@ -37,9 +40,9 @@ class Division implements Model
         return new self(
             $data['name'],
             $data['description'],
-            $data['is_active'],
+            DbCast::int($data['is_active'] ?? 0),
             null,
-            $data['division_head_id'],
+            DbCast::intOrNull($data['division_head_id'] ?? null),
             null,
             null
         );
@@ -63,11 +66,11 @@ class Division implements Model
             return new self(
                 $data['name'],
                 $data['description'],
-                $data['is_active'],
-                $data['id'],
-                $data['division_head_id'],
-                $data['created_at'],
-                $data['updated_at']
+                DbCast::int($data['is_active'] ?? 0),
+                DbCast::intOrNull($data['id'] ?? null),
+                DbCast::intOrNull($data['division_head_id'] ?? null),
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null
             );
         }
         return null;
@@ -91,11 +94,11 @@ class Division implements Model
             $divisions[] = new self(
                 $division['name'],
                 $division['description'],
-                $division['is_active'],
-                $division['id'],
-                $division['division_head_id'],
-                $division['created_at'],
-                $division['updated_at']
+                DbCast::int($division['is_active'] ?? 0),
+                DbCast::intOrNull($division['id'] ?? null),
+                DbCast::intOrNull($division['division_head_id'] ?? null),
+                $division['created_at'] ?? null,
+                $division['updated_at'] ?? null
             );
         }
         return $divisions;
@@ -122,11 +125,11 @@ class Division implements Model
             $divisions[] = new self(
                 $division['name'],
                 $division['description'],
-                $division['is_active'],
-                $division['id'],
-                $division['division_head_id'],
-                $division['created_at'],
-                $division['updated_at']
+                DbCast::int($division['is_active'] ?? 0),
+                DbCast::intOrNull($division['id'] ?? null),
+                DbCast::intOrNull($division['division_head_id'] ?? null),
+                $division['created_at'] ?? null,
+                $division['updated_at'] ?? null
             );
         }
         return $divisions;
@@ -196,11 +199,13 @@ class Division implements Model
             if ($data) {
                 $this->name = $data['name'];
                 $this->description = $data['description'];
-                $this->is_active = $data['is_active'];
-                $this->division_head_id = $data['division_head_id'];
+                $this->is_active = DbCast::int($data['is_active'] ?? 0);
+                $this->division_head_id = DbCast::intOrNull($data['division_head_id'] ?? null);
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
-                if($this->division_head_id) $this->division_head = User::find($this->division_head_id);
+                if ($this->division_head_id !== null && $this->division_head_id !== 0) {
+                    $this->division_head = User::find($this->division_head_id);
+                }
                 $this->event = Event::findAllByDivisionId($this->id);
                 return true;
             }
@@ -247,11 +252,11 @@ class Division implements Model
             return new self(
                 $data['name'],
                 $data['description'],
-                $data['is_active'],
-                $data['id'],
-                $data['division_head_id'],
-                $data['created_at'],
-                $data['updated_at']
+                DbCast::int($data['is_active'] ?? 0),
+                DbCast::intOrNull($data['id'] ?? null),
+                DbCast::intOrNull($data['division_head_id'] ?? null),
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null
             );
         }
         return null;

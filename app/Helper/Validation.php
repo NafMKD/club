@@ -25,9 +25,9 @@ class Validation
      * @param string $input
      * @return boolean
      */
-    public static function isValidUsername(string $input): bool|int
+    public static function isValidUsername(string $input): bool
     {
-        return preg_match('/^[a-zA-Z0-9_-]*$/', $input);
+        return preg_match('/^[a-zA-Z0-9_-]*$/', $input) === 1;
     }
 
     /**
@@ -37,9 +37,9 @@ class Validation
      * @param string $input
      * @return boolean
      */
-    public static function isValidPassword(string $input): bool|int
+    public static function isValidPassword(string $input): bool
     {
-        return preg_match('/^[a-zA-Z0-9_-]*$/', $input);
+        return preg_match('/^[a-zA-Z0-9_-]*$/', $input) === 1;
     }
 
     /**
@@ -49,9 +49,9 @@ class Validation
      * @param string $input
      * @return boolean
      */
-    public static function isValidImage(string $input): bool|int
+    public static function isValidImage(string $input): bool
     {
-        return preg_match('/^image\/(jpeg|png|gif)$/', $input);
+        return preg_match('/^image\/(jpeg|png|gif)$/', $input) === 1;
     }
 
     /**

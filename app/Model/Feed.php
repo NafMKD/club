@@ -21,8 +21,9 @@ class Feed implements Model
         public ?string $updated_at
     ) 
     {
-        if($id) $this->feed_file = FeedFile::findAllByFeedId($id);
-        return $this;
+        if ($id !== null && $id !== 0) {
+            $this->feed_file = FeedFile::findAllByFeedId($id);
+        }
     }
     /**
      * create new instance
@@ -33,12 +34,12 @@ class Feed implements Model
     public static function create(array $data): self
     {
         return new self(
-            $data['user_id'],
+            DbCast::int($data['user_id'] ?? 0),
             $data['title'],
             $data['description'],
-            $data['is_active'],
+            DbCast::int($data['is_active'] ?? 0),
             null,
-            $data['event_id'],
+            DbCast::intOrNull($data['event_id'] ?? null),
             null,
             null
         );
@@ -59,14 +60,14 @@ class Feed implements Model
         $data = $stmt->fetch();
         if($data){
             return new self(
-                $data['user_id'],
+                DbCast::int($data['user_id'] ?? 0),
                 $data['title'],
                 $data['description'],
-                $data['is_active'],
-                $data['id'],
-                $data['event_id'],
-                $data['created_at'],
-                $data['updated_at']
+                DbCast::int($data['is_active'] ?? 0),
+                DbCast::intOrNull($data['id'] ?? null),
+                DbCast::intOrNull($data['event_id'] ?? null),
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null
             );
         }
         return null;
@@ -87,14 +88,14 @@ class Feed implements Model
         $feeds = [];
         foreach ($data as $feed) {
             $feeds[] = new self(
-                $feed['user_id'],
+                DbCast::int($feed['user_id'] ?? 0),
                 $feed['title'],
                 $feed['description'],
-                $feed['is_active'],
-                $feed['id'],
-                $feed['event_id'],
-                $feed['created_at'],
-                $feed['updated_at']
+                DbCast::int($feed['is_active'] ?? 0),
+                DbCast::intOrNull($feed['id'] ?? null),
+                DbCast::intOrNull($feed['event_id'] ?? null),
+                $feed['created_at'] ?? null,
+                $feed['updated_at'] ?? null
             );
         }
         return $feeds;
@@ -164,11 +165,11 @@ class Feed implements Model
             $stmt->execute([':id' => $this->id]);
             $data = $stmt->fetch();
             if($data){
-                $this->user_id = $data['user_id'];
+                $this->user_id = DbCast::int($data['user_id'] ?? 0);
                 $this->title = $data['title'];
                 $this->description = $data['description'];
-                $this->is_active = $data['is_active'];
-                $this->event_id = $data['event_id'];
+                $this->is_active = DbCast::int($data['is_active'] ?? 0);
+                $this->event_id = DbCast::intOrNull($data['event_id'] ?? null);
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
                 $this->feed_file = FeedFile::findAllByFeedId($this->id);
@@ -194,14 +195,14 @@ class Feed implements Model
         $feeds = [];
         foreach ($data as $feed) {
             $feeds[] = new self(
-                $feed['user_id'],
+                DbCast::int($feed['user_id'] ?? 0),
                 $feed['title'],
                 $feed['description'],
-                $feed['is_active'],
-                $feed['id'],
-                $feed['event_id'],
-                $feed['created_at'],
-                $feed['updated_at']
+                DbCast::int($feed['is_active'] ?? 0),
+                DbCast::intOrNull($feed['id'] ?? null),
+                DbCast::intOrNull($feed['event_id'] ?? null),
+                $feed['created_at'] ?? null,
+                $feed['updated_at'] ?? null
             );
         }
         return $feeds;
@@ -223,14 +224,14 @@ class Feed implements Model
         $feeds = [];
         foreach ($data as $feed) {
             $feeds[] = new self(
-                $feed['user_id'],
+                DbCast::int($feed['user_id'] ?? 0),
                 $feed['title'],
                 $feed['description'],
-                $feed['is_active'],
-                $feed['id'],
-                $feed['event_id'],
-                $feed['created_at'],
-                $feed['updated_at']
+                DbCast::int($feed['is_active'] ?? 0),
+                DbCast::intOrNull($feed['id'] ?? null),
+                DbCast::intOrNull($feed['event_id'] ?? null),
+                $feed['created_at'] ?? null,
+                $feed['updated_at'] ?? null
             );
         }
         return $feeds;

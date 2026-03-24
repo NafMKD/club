@@ -24,7 +24,9 @@ class Account
         if ($data && $data->password == md5($password)) {
             $data->last_login = date('Y-m-d H:i:s');
             $data->save();
-            $division_head = self::checkUserIsDivisionHead($data);
+            $division_head = $data->id !== null
+                ? self::checkUserIsDivisionHead($data)
+                : false;
             return [
                 'user_data' => $data, 
                 'is_division_head' => ($division_head) ? true : false, 
@@ -53,6 +55,9 @@ class Account
      */
     private static function checkUserIsDivisionHead(User $user): Division|bool
     {
+        if ($user->id === null) {
+            return false;
+        }
         $division = Division::findByUserId($user->id);
         if ($division) return $division;
         return false;

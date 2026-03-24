@@ -24,8 +24,9 @@ class User implements Model
         public ?string $updated_at
     ) 
     {
-        if($id) $this->userDetail = UserDetail::findByUserId($id);
-        return $this;
+        if ($id !== null && $id !== 0) {
+            $this->userDetail = UserDetail::findByUserId($id);
+        }
     }
     /**
      * create new instance
@@ -40,10 +41,10 @@ class User implements Model
             md5($data['password']),
             null,
             null,
-            $data['is_superuser'],
-            $data['is_president'],
-            $data['profile_picture'],
-            $data['is_active'],
+            DbCast::intOrNull($data['is_superuser'] ?? null),
+            DbCast::intOrNull($data['is_president'] ?? null),
+            $data['profile_picture'] ?? null,
+            DbCast::intOrNull($data['is_active'] ?? null),
             null,
             null,
             null
@@ -68,15 +69,15 @@ class User implements Model
             return new self(
                 $data['username'],
                 $data['password'],
-                $data['id'],
-                $data['last_login'],
-                $data['is_superuser'],
-                $data['is_president'],
-                $data['profile_picture'],
-                $data['is_active'],
-                $data['deactivated_at'],
-                $data['created_at'],
-                $data['updated_at']
+                DbCast::intOrNull($data['id'] ?? null),
+                $data['last_login'] ?? null,
+                DbCast::intOrNull($data['is_superuser'] ?? null),
+                DbCast::intOrNull($data['is_president'] ?? null),
+                $data['profile_picture'] ?? null,
+                DbCast::intOrNull($data['is_active'] ?? null),
+                $data['deactivated_at'] ?? null,
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null
             );
         }
         return null;
@@ -100,15 +101,15 @@ class User implements Model
             $users[] = new self(
                 $user['username'],
                 $user['password'],
-                $user['id'],
-                $user['last_login'],
-                $user['is_superuser'],
-                $user['is_president'],
-                $user['profile_picture'],
-                $user['is_active'],
-                $user['deactivated_at'],
-                $user['created_at'],
-                $user['updated_at']
+                DbCast::intOrNull($user['id'] ?? null),
+                $user['last_login'] ?? null,
+                DbCast::intOrNull($user['is_superuser'] ?? null),
+                DbCast::intOrNull($user['is_president'] ?? null),
+                $user['profile_picture'] ?? null,
+                DbCast::intOrNull($user['is_active'] ?? null),
+                $user['deactivated_at'] ?? null,
+                $user['created_at'] ?? null,
+                $user['updated_at'] ?? null
             );
         }
         return $users;
@@ -218,10 +219,10 @@ class User implements Model
                 $this->username = $data['username'];
                 $this->password = $data['password'];
                 $this->last_login = $data['last_login'];
-                $this->is_superuser = $data['is_superuser'];
-                $this->is_president = $data['is_president'];
+                $this->is_superuser = DbCast::intOrNull($data['is_superuser'] ?? null);
+                $this->is_president = DbCast::intOrNull($data['is_president'] ?? null);
                 $this->profile_picture = $data['profile_picture'];
-                $this->is_active = $data['is_active'];
+                $this->is_active = DbCast::intOrNull($data['is_active'] ?? null);
                 $this->deactivated_at = $data['deactivated_at'];
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
@@ -250,15 +251,15 @@ class User implements Model
             return new self(
                 $data['username'],
                 $data['password'],
-                $data['id'],
-                $data['last_login'],
-                $data['is_superuser'],
-                $data['is_president'],
-                $data['profile_picture'],
-                $data['is_active'],
-                $data['deactivated_at'],
-                $data['created_at'],
-                $data['updated_at']
+                DbCast::intOrNull($data['id'] ?? null),
+                $data['last_login'] ?? null,
+                DbCast::intOrNull($data['is_superuser'] ?? null),
+                DbCast::intOrNull($data['is_president'] ?? null),
+                $data['profile_picture'] ?? null,
+                DbCast::intOrNull($data['is_active'] ?? null),
+                $data['deactivated_at'] ?? null,
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null
             );
         }
         return null;

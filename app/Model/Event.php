@@ -23,8 +23,9 @@ class Event implements Model
         public ?string $created_at,
         public ?string $updated_at
     ) {
-        if ($id) $this->feed = Feed::findAllByEventId($id);
-        return $this;
+        if ($id !== null && $id !== 0) {
+            $this->feed = Feed::findAllByEventId($id);
+        }
     }
     /**
      * create new instance
@@ -38,12 +39,12 @@ class Event implements Model
             $data['title'],
             $data['description'],
             null,
-            $data['division_id'],
-            $data['image_url'],
-            $data['start_date'],
-            $data['end_date'],
-            $data['is_public'],
-            $data['is_active'],
+            DbCast::intOrNull($data['division_id'] ?? null),
+            $data['image_url'] ?? null,
+            $data['start_date'] ?? null,
+            $data['end_date'] ?? null,
+            DbCast::intOrNull($data['is_public'] ?? null),
+            DbCast::intOrNull($data['is_active'] ?? null),
             null,
             null
         );
@@ -66,15 +67,15 @@ class Event implements Model
             return new self(
                 $data['title'],
                 $data['description'],
-                $data['id'],
-                $data['division_id'],
-                $data['image_url'],
-                $data['start_date'],
-                $data['end_date'],
-                $data['is_public'],
-                $data['is_active'],
-                $data['created_at'],
-                $data['updated_at']
+                DbCast::intOrNull($data['id'] ?? null),
+                DbCast::intOrNull($data['division_id'] ?? null),
+                $data['image_url'] ?? null,
+                $data['start_date'] ?? null,
+                $data['end_date'] ?? null,
+                DbCast::intOrNull($data['is_public'] ?? null),
+                DbCast::intOrNull($data['is_active'] ?? null),
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null
             );
         }
         return null;
@@ -97,15 +98,15 @@ class Event implements Model
             $events[] = new self(
                 $event['title'],
                 $event['description'],
-                $event['id'],
-                $event['division_id'],
-                $event['image_url'],
-                $event['start_date'],
-                $event['end_date'],
-                $event['is_public'],
-                $event['is_active'],
-                $event['created_at'],
-                $event['updated_at']
+                DbCast::intOrNull($event['id'] ?? null),
+                DbCast::intOrNull($event['division_id'] ?? null),
+                $event['image_url'] ?? null,
+                $event['start_date'] ?? null,
+                $event['end_date'] ?? null,
+                DbCast::intOrNull($event['is_public'] ?? null),
+                DbCast::intOrNull($event['is_active'] ?? null),
+                $event['created_at'] ?? null,
+                $event['updated_at'] ?? null
             );
         }
         return $events;
@@ -183,12 +184,12 @@ class Event implements Model
             if ($data) {
                 $this->title = $data['title'];
                 $this->description = $data['description'];
-                $this->division_id = $data['division_id'];
+                $this->division_id = DbCast::intOrNull($data['division_id'] ?? null);
                 $this->image_url = $data['image_url'];
                 $this->start_date = $data['start_date'];
                 $this->end_date = $data['end_date'];
-                $this->is_public = $data['is_public'];
-                $this->is_active = $data['is_active'];
+                $this->is_public = DbCast::intOrNull($data['is_public'] ?? null);
+                $this->is_active = DbCast::intOrNull($data['is_active'] ?? null);
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
                 $this->feed = Feed::findAllByEventId($this->id);
@@ -217,15 +218,15 @@ class Event implements Model
             $events[] = new self(
                 $event['title'],
                 $event['description'],
-                $event['id'],
-                $event['division_id'],
-                $event['image_url'],
-                $event['start_date'],
-                $event['end_date'],
-                $event['is_public'],
-                $event['is_active'],
-                $event['created_at'],
-                $event['updated_at']
+                DbCast::intOrNull($event['id'] ?? null),
+                DbCast::intOrNull($event['division_id'] ?? null),
+                $event['image_url'] ?? null,
+                $event['start_date'] ?? null,
+                $event['end_date'] ?? null,
+                DbCast::intOrNull($event['is_public'] ?? null),
+                DbCast::intOrNull($event['is_active'] ?? null),
+                $event['created_at'] ?? null,
+                $event['updated_at'] ?? null
             );
         }
         return $events;
@@ -250,15 +251,15 @@ class Event implements Model
             $events[] = new self(
                 $event['title'],
                 $event['description'],
-                $event['id'],
-                $event['division_id'],
-                $event['image_url'],
-                $event['start_date'],
-                $event['end_date'],
-                $event['is_public'],
-                $event['is_active'],
-                $event['created_at'],
-                $event['updated_at']
+                DbCast::intOrNull($event['id'] ?? null),
+                DbCast::intOrNull($event['division_id'] ?? null),
+                $event['image_url'] ?? null,
+                $event['start_date'] ?? null,
+                $event['end_date'] ?? null,
+                DbCast::intOrNull($event['is_public'] ?? null),
+                DbCast::intOrNull($event['is_active'] ?? null),
+                $event['created_at'] ?? null,
+                $event['updated_at'] ?? null
             );
         }
         return $events;
@@ -296,15 +297,15 @@ class Event implements Model
             $events[] = new self(
                 $event['title'],
                 $event['description'],
-                $event['id'],
-                $event['division_id'],
-                $event['image_url'],
-                $event['start_date'],
-                $event['end_date'],
-                $event['is_public'],
-                $event['is_active'],
-                $event['created_at'],
-                $event['updated_at']
+                DbCast::intOrNull($event['id'] ?? null),
+                DbCast::intOrNull($event['division_id'] ?? null),
+                $event['image_url'] ?? null,
+                $event['start_date'] ?? null,
+                $event['end_date'] ?? null,
+                DbCast::intOrNull($event['is_public'] ?? null),
+                DbCast::intOrNull($event['is_active'] ?? null),
+                $event['created_at'] ?? null,
+                $event['updated_at'] ?? null
             );
         }
         return $events;
@@ -330,15 +331,15 @@ class Event implements Model
             $events[] = new self(
                 $event['title'],
                 $event['description'],
-                $event['id'],
-                $event['division_id'],
-                $event['image_url'],
-                $event['start_date'],
-                $event['end_date'],
-                $event['is_public'],
-                $event['is_active'],
-                $event['created_at'],
-                $event['updated_at']
+                DbCast::intOrNull($event['id'] ?? null),
+                DbCast::intOrNull($event['division_id'] ?? null),
+                $event['image_url'] ?? null,
+                $event['start_date'] ?? null,
+                $event['end_date'] ?? null,
+                DbCast::intOrNull($event['is_public'] ?? null),
+                DbCast::intOrNull($event['is_active'] ?? null),
+                $event['created_at'] ?? null,
+                $event['updated_at'] ?? null
             );
         }
         return $events;
@@ -365,15 +366,15 @@ class Event implements Model
             $events[] = new self(
                 $event['title'],
                 $event['description'],
-                $event['id'],
-                $event['division_id'],
-                $event['image_url'],
-                $event['start_date'],
-                $event['end_date'],
-                $event['is_public'],
-                $event['is_active'],
-                $event['created_at'],
-                $event['updated_at']
+                DbCast::intOrNull($event['id'] ?? null),
+                DbCast::intOrNull($event['division_id'] ?? null),
+                $event['image_url'] ?? null,
+                $event['start_date'] ?? null,
+                $event['end_date'] ?? null,
+                DbCast::intOrNull($event['is_public'] ?? null),
+                DbCast::intOrNull($event['is_active'] ?? null),
+                $event['created_at'] ?? null,
+                $event['updated_at'] ?? null
             );
         }
         return $events;
@@ -401,15 +402,15 @@ class Event implements Model
             $events[] = new self(
                 $event['title'],
                 $event['description'],
-                $event['id'],
-                $event['division_id'],
-                $event['image_url'],
-                $event['start_date'],
-                $event['end_date'],
-                $event['is_public'],
-                $event['is_active'],
-                $event['created_at'],
-                $event['updated_at']
+                DbCast::intOrNull($event['id'] ?? null),
+                DbCast::intOrNull($event['division_id'] ?? null),
+                $event['image_url'] ?? null,
+                $event['start_date'] ?? null,
+                $event['end_date'] ?? null,
+                DbCast::intOrNull($event['is_public'] ?? null),
+                DbCast::intOrNull($event['is_active'] ?? null),
+                $event['created_at'] ?? null,
+                $event['updated_at'] ?? null
             );
         }
         return $events;
@@ -458,15 +459,15 @@ class Event implements Model
             $events[] = new self(
                 $event['title'],
                 $event['description'],
-                $event['id'],
-                $event['division_id'],
-                $event['image_url'],
-                $event['start_date'],
-                $event['end_date'],
-                $event['is_public'],
-                $event['is_active'],
-                $event['created_at'],
-                $event['updated_at']
+                DbCast::intOrNull($event['id'] ?? null),
+                DbCast::intOrNull($event['division_id'] ?? null),
+                $event['image_url'] ?? null,
+                $event['start_date'] ?? null,
+                $event['end_date'] ?? null,
+                DbCast::intOrNull($event['is_public'] ?? null),
+                DbCast::intOrNull($event['is_active'] ?? null),
+                $event['created_at'] ?? null,
+                $event['updated_at'] ?? null
             );
         }
         return $events;
@@ -494,15 +495,15 @@ class Event implements Model
             $events[] = new self(
                 $event['title'],
                 $event['description'],
-                $event['id'],
-                $event['division_id'],
-                $event['image_url'],
-                $event['start_date'],
-                $event['end_date'],
-                $event['is_public'],
-                $event['is_active'],
-                $event['created_at'],
-                $event['updated_at']
+                DbCast::intOrNull($event['id'] ?? null),
+                DbCast::intOrNull($event['division_id'] ?? null),
+                $event['image_url'] ?? null,
+                $event['start_date'] ?? null,
+                $event['end_date'] ?? null,
+                DbCast::intOrNull($event['is_public'] ?? null),
+                DbCast::intOrNull($event['is_active'] ?? null),
+                $event['created_at'] ?? null,
+                $event['updated_at'] ?? null
             );
         }
         return $events;
@@ -517,8 +518,9 @@ class Event implements Model
      */
     public function getAttendance(bool $showAll = false): array
     {
-        // registering past attendance if event is passes
-        if(date($this->start_date) < date('Y-m-d h:i:s')){
+        // registering past attendance if event has passed
+        $startTs = $this->start_date !== null ? strtotime((string) $this->start_date) : false;
+        if ($startTs !== false && $startTs < time()) {
             $users = $this->getMemberForAttendance();
             foreach ($users as $user) {
                 $att = Attendance::create(

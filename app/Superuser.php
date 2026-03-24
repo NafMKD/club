@@ -6,6 +6,8 @@ namespace App;
 
 include __DIR__ . '/../vendor/autoload.php';
 
+use App\Database\DB;
+
 class Superuser 
 {
 
@@ -13,7 +15,8 @@ class Superuser
     {
     }
 
-    public function register($username, $password){
+    public function register(string $username, string $password): bool
+    {
 
         $stmt = $this->pdo->prepare('INSERT INTO users(username, password, is_superuser, is_active) VALUES (:username,:password,:is_superuser,:is_active)');
 
@@ -26,12 +29,15 @@ class Superuser
             ]
         );
 
-        if($chek) return true;
-        else return false;
+        return $chek;
     }
 }
 
-$obj = new Superuser(Database\DB::getInstance());
+$obj = new Superuser(DB::getInstance());
+
+$username = '';
+$password = '';
+$password_confirmation = '';
 
 echo 'Enter userame : ';
 fscanf(STDIN, "%s", $username);
@@ -40,12 +46,14 @@ fscanf(STDIN, "%s", $password);
 echo 'Enter Password (again) : ';
 fscanf(STDIN, "%s", $password_confirmation);
 
-if($password != $password_confirmation){
+if ($password !== $password_confirmation) {
     echo 'Passwords do not match' . PHP_EOL;
     exit;
-}else if($obj->register($username, md5($password))){
+}
+
+if ($obj->register($username, md5($password))) {
     echo 'User registered successfully' . PHP_EOL;
-}else{
+} else {
     echo 'User registration failed' . PHP_EOL;
 }
 

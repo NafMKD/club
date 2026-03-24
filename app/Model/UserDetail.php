@@ -23,7 +23,6 @@ class UserDetail implements Model
         public ?string $updated_at
     ) 
     {
-        return $this;
     }
     /**
      * create new instance
@@ -34,14 +33,14 @@ class UserDetail implements Model
     public static function create(array $data):self
     {
         return new self(
-            $data['user_id'],
+            DbCast::int($data['user_id'] ?? 0),
             $data['student_id'],
             $data['first_name'],
             $data['last_name'],
             $data['gender'],
             $data['phone'],
-            $data['year'],
-            $data['is_active'],
+            DbCast::int($data['year'] ?? 0),
+            DbCast::int($data['is_active'] ?? 0),
             null,
             null,
             null,
@@ -63,17 +62,17 @@ class UserDetail implements Model
         $data = $stmt->fetch();
         if($data){
             return new self(
-                $data['user_id'],
+                DbCast::int($data['user_id'] ?? 0),
                 $data['student_id'],
                 $data['first_name'],
                 $data['last_name'],
                 $data['gender'],
                 $data['phone'],
-                $data['year'],
-                $data['is_active'],
-                $data['id'],
-                $data['created_at'],
-                $data['updated_at']
+                DbCast::int($data['year'] ?? 0),
+                DbCast::int($data['is_active'] ?? 0),
+                DbCast::intOrNull($data['id'] ?? null),
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null
             );
         }
         return null;
@@ -94,17 +93,17 @@ class UserDetail implements Model
         $result = [];
         foreach($data as $row){
             $result[] = new self(
-                $row['user_id'],
+                DbCast::int($row['user_id'] ?? 0),
                 $row['student_id'],
                 $row['first_name'],
                 $row['last_name'],
-                $data['gender'],
-                $data['phone'],
-                $data['year'],
-                $data['is_active'],
-                $data['id'],
-                $data['created_at'],
-                $data['updated_at']
+                $row['gender'],
+                $row['phone'],
+                DbCast::int($row['year'] ?? 0),
+                DbCast::int($row['is_active'] ?? 0),
+                DbCast::intOrNull($row['id'] ?? null),
+                $row['created_at'] ?? null,
+                $row['updated_at'] ?? null
             );
         }
         return $result;
@@ -180,14 +179,14 @@ class UserDetail implements Model
             $stmt->execute([':id' => $this->id]);
             $data = $stmt->fetch();
             if($data){
-                $this->user_id = $data['user_id'];
+                $this->user_id = DbCast::int($data['user_id'] ?? 0);
                 $this->student_id = $data['student_id'];
                 $this->first_name = $data['first_name'];
                 $this->last_name = $data['last_name'];
                 $this->gender = $data['gender'];
                 $this->phone = $data['phone'];
-                $this->year = $data['year'];
-                $this->is_active = $data['is_active'];
+                $this->year = DbCast::int($data['year'] ?? 0);
+                $this->is_active = DbCast::int($data['is_active'] ?? 0);
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
                 return true;
@@ -212,17 +211,17 @@ class UserDetail implements Model
         $data = $stmt->fetch();
         if($data){
             return new self(
-                $data['user_id'],
+                DbCast::int($data['user_id'] ?? 0),
                 $data['student_id'],
                 $data['first_name'],
                 $data['last_name'],
                 $data['gender'],
                 $data['phone'],
-                $data['year'],
-                $data['is_active'],
-                $data['id'],
-                $data['created_at'],
-                $data['updated_at']
+                DbCast::int($data['year'] ?? 0),
+                DbCast::int($data['is_active'] ?? 0),
+                DbCast::intOrNull($data['id'] ?? null),
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null
             );
         }
         return null;

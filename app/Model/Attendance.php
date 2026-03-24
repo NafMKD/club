@@ -21,7 +21,6 @@ class Attendance implements Model
         public ?string $updated_at
     ) 
     {
-        return $this;
     }
 
     /**
@@ -33,10 +32,10 @@ class Attendance implements Model
     public static function create(array $data):self
     {
         return new self(
-            $data['user_id'],
-            $data['event_id'],
-            $data['is_attended'],
-            $data['is_active'],
+            DbCast::int($data['user_id'] ?? 0),
+            DbCast::int($data['event_id'] ?? 0),
+            DbCast::int($data['is_attended'] ?? 0),
+            DbCast::int($data['is_active'] ?? 0),
             null,
             null,
             null
@@ -58,13 +57,13 @@ class Attendance implements Model
         $data = $stmt->fetch();
         if($data){
             return new self(
-                $data['user_id'],
-                $data['event_id'],
-                $data['is_attended'],
-                $data['is_active'],
-                $data['id'],
-                $data['created_at'],
-                $data['updated_at']
+                DbCast::int($data['user_id'] ?? 0),
+                DbCast::int($data['event_id'] ?? 0),
+                DbCast::int($data['is_attended'] ?? 0),
+                DbCast::int($data['is_active'] ?? 0),
+                DbCast::intOrNull($data['id'] ?? null),
+                $data['created_at'] ?? null,
+                $data['updated_at'] ?? null
             );
         }
         return null;
@@ -85,13 +84,13 @@ class Attendance implements Model
         $attendances = [];
         foreach ($data as $attendance) {
             $attendances[] = new self(
-                $attendance['user_id'],
-                $attendance['event_id'],
-                $attendance['is_attended'],
-                $attendance['is_active'],
-                $attendance['id'],
-                $attendance['created_at'],
-                $attendance['updated_at']
+                DbCast::int($attendance['user_id'] ?? 0),
+                DbCast::int($attendance['event_id'] ?? 0),
+                DbCast::int($attendance['is_attended'] ?? 0),
+                DbCast::int($attendance['is_active'] ?? 0),
+                DbCast::intOrNull($attendance['id'] ?? null),
+                $attendance['created_at'] ?? null,
+                $attendance['updated_at'] ?? null
             );
         }
         return $attendances;
@@ -160,10 +159,10 @@ class Attendance implements Model
             $stmt->execute([':id' => $this->id]);
             $data = $stmt->fetch();
             if($data){
-                $this->user_id = $data['user_id'];
-                $this->event_id = $data['event_id'];
-                $this->is_attended = $data['is_attended'];
-                $this->is_active = $data['is_active'];
+                $this->user_id = DbCast::int($data['user_id'] ?? 0);
+                $this->event_id = DbCast::int($data['event_id'] ?? 0);
+                $this->is_attended = DbCast::int($data['is_attended'] ?? 0);
+                $this->is_active = DbCast::int($data['is_active'] ?? 0);
                 $this->created_at = $data['created_at'];
                 $this->updated_at = $data['updated_at'];
                 return true;
