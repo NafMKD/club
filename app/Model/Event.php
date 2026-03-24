@@ -432,7 +432,7 @@ class Event implements Model
         $data = $stmt->fetchAll();
         $users = [];
         foreach ($data as $user) {
-            $users[] = User::find($user['id']);
+            $users[] = User::find(DbCast::int($user['id'] ?? 0));
         }
         return $users;
     }
@@ -541,7 +541,7 @@ class Event implements Model
         $data = $stmt->fetchAll();
         $attendances = [];
         foreach ($data as $attendance) {
-            $attendances[] = Attendance::find($attendance['id']);
+            $attendances[] = Attendance::find(DbCast::int($attendance['id'] ?? 0));
         }
         return $attendances;
     }

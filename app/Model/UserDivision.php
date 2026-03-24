@@ -176,7 +176,7 @@ class UserDivision implements Model
         $data = $stmt->fetchAll();
         $result = [];
         foreach($data as $row) {
-            $result[] = Division::find($row['division_id']);
+            $result[] = Division::find(DbCast::int($row['division_id'] ?? 0));
         }
         return $result;
     }

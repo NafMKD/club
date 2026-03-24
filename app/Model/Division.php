@@ -228,7 +228,7 @@ class Division implements Model
         $data = $stmt->fetchAll();
         $result = [];
         foreach($data as $row) {
-            $result[] = User::find($row['user_id']);
+            $result[] = User::find(DbCast::int($row['user_id'] ?? 0));
         }
         return $result;
     }
@@ -278,7 +278,7 @@ class Division implements Model
         $data = $stmt->fetchAll();
         $result = [];
         foreach($data as $row) {
-            $result[] = User::find($row['id']);
+            $result[] = User::find(DbCast::int($row['id'] ?? 0));
         }
         return $result;
     }

@@ -87,10 +87,12 @@ if (isset($_GET['delete'])) {
         <?php if ($user->hasDivisions()) : ?>
             <?php $c = 1;
             foreach ($user->hasDivisions() as $division) : 
-                $progress = $user->getUserAttendanceProgress($division->id);
-                if($progress['all'] !== 0){
-                    $progress = ($progress['attended'] * 100) / $progress['all'];
-                }else{
+                $progressRow = $user->getUserAttendanceProgress($division->id);
+                $totalEvents = (int) ($progressRow['all'] ?? 0);
+                $attended = (int) ($progressRow['attended'] ?? 0);
+                if ($totalEvents > 0) {
+                    $progress = ($attended * 100) / $totalEvents;
+                } else {
                     $progress = 100;
                 }
 

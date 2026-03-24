@@ -274,19 +274,26 @@ class User implements Model
      */
     public function getUserAttendanceProgress(int $division_id, bool $showAll = false) : ?array
     {
-        $sql = "SELECT COUNT(*) FROM attendances WHERE event_id IN (SELECT id FROM events WHERE division_id = :division_id) AND is_attended = 1 AND user_id = :user_id";
+        if ($this->id === null) {
+            return ['attended' => 0, 'all' => 0];
+        }
+
+        $sql = "SELECT COUNT(*) AS cnt FROM attendances WHERE event_id IN (SELECT id FROM events WHERE division_id = :division_id) AND is_attended = 1 AND user_id = :user_id";
         if(!$showAll) $sql .= " AND is_active = 1";
         $stmt = DB::getInstance()->prepare($sql);
-        $stmt->execute([':division_id' => $division_id, 'user_id' => $this->id]);
+        $stmt->execute([':division_id' => $division_id, ':user_id' => $this->id]);
         $data = $stmt->fetch();
 
-        $sql2 = "SELECT COUNT(*) FROM events WHERE division_id = :division_id ";
+        $sql2 = "SELECT COUNT(*) AS cnt FROM events WHERE division_id = :division_id ";
         if(!$showAll) $sql2 .= " AND is_active = 1";
         $stmt2 = DB::getInstance()->prepare($sql2);
         $stmt2->execute([':division_id' => $division_id]);
         $data2 = $stmt2->fetch();
-        
-        return ['attended'=>$data[0], 'all'=>$data2[0]];
+
+        $attended = (int) ($data['cnt'] ?? 0);
+        $all = (int) ($data2['cnt'] ?? 0);
+
+        return ['attended' => $attended, 'all' => $all];
     }
 
     /**
@@ -317,7 +324,7 @@ class User implements Model
         $data = $stmt->fetchAll();
         $attendances = [];
         foreach($data as $attendance) {
-            $attendances[] = Attendance::find($attendance['id']);
+            $attendances[] = Attendance::find(DbCast::int($attendance['id'] ?? 0));
         }
         return $attendances;
     }

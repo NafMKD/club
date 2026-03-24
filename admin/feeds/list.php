@@ -7,12 +7,20 @@ use App\Model\Feed;
 $feeds = Feed::findAllFeedView();
 
 ?>
-<?php foreach ($feeds as $feed) : $file_count = count($feed->feed_file);?>
+<?php foreach ($feeds as $feed) :
+    $feedAuthor = $feed->hasUser();
+    $file_count = count($feed->feed_file ?? []);
+    $authorLabel = $feedAuthor
+        ? (($feedAuthor->userDetail)
+            ? ucwords($feedAuthor->userDetail->first_name . ' ' . $feedAuthor->userDetail->last_name)
+            : ucwords($feedAuthor->username))
+        : '—';
+    ?>
     <!-- post starts -->
     <div class="post m-1 border-bottom" style="max-width: 611px;">
         <div class="post__avatar">
-            <?php if ($feed->hasUser()->profile_picture && file_exists(__DIR__ . '/../../files/images/profile_pictures/' . $feed->hasUser()->profile_picture)) : ?>
-                <img src="<?= '../files/images/profile_pictures/' . $feed->hasUser()->profile_picture ?>" alt="" />
+            <?php if ($feedAuthor && $feedAuthor->profile_picture && file_exists(__DIR__ . '/../../files/images/profile_pictures/' . $feedAuthor->profile_picture)) : ?>
+                <img src="<?= '../files/images/profile_pictures/' . htmlspecialchars($feedAuthor->profile_picture, ENT_QUOTES, 'UTF-8') ?>" alt="" />
             <?php else : ?>
                 <img src="../assets/dist/img/logo.jpg" alt="" />
             <?php endif ?>
@@ -22,7 +30,11 @@ $feeds = Feed::findAllFeedView();
             <div class="post__header">
                 <div class="post__headerText">
                     <h3>
-                        <a href="users.php?view=<?= $feed->hasUser()->id ?>"><?= ucwords(($feed->hasUser()->userDetail) ? $feed->hasUser()->userDetail->first_name . ' ' . $feed->hasUser()->userDetail->last_name : $feed->hasUser()->username) ?></a>
+                        <?php if ($feedAuthor) : ?>
+                        <a href="users.php?view=<?= (int) $feedAuthor->id ?>"><?= htmlspecialchars($authorLabel, ENT_QUOTES, 'UTF-8') ?></a>
+                        <?php else : ?>
+                        <?= htmlspecialchars($authorLabel, ENT_QUOTES, 'UTF-8') ?>
+                        <?php endif ?>
                         <span class="post__headerSpecial"><?= Formater::formatDateLikeXDaysAgo($feed->created_at) ?></span>
                     </h3>
                 </div>

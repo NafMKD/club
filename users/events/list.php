@@ -7,13 +7,16 @@ $events = Event::getEventsForUser($user->id);
 
 ?>
 
-<?php foreach ($events as $event) : ?>
+<?php foreach ($events as $event) :
+    $division = $event->hasDivision();
+    $divisionHead = $division?->division_head;
+    ?>
 
     <!-- post starts -->
     <div class="post m-1 border-bottom" style="max-width: 611px;">
         <div class="post__avatar">
-            <?php if ($event->hasDivision()->division_head && file_exists(__DIR__ . '/../../files/images/profile_pictures/' . $event->hasDivision()->division_head->profile_picture)) : ?>
-                <img src="<?= '../files/images/profile_pictures/' . $event->hasDivision()->division_head->profile_picture ?>" alt="" />
+            <?php if ($divisionHead && $divisionHead->profile_picture && file_exists(__DIR__ . '/../../files/images/profile_pictures/' . $divisionHead->profile_picture)) : ?>
+                <img src="<?= '../files/images/profile_pictures/' . htmlspecialchars($divisionHead->profile_picture, ENT_QUOTES, 'UTF-8') ?>" alt="" />
             <?php else : ?>
                 <img src="../assets/dist/img/logo.jpg" alt="" />
             <?php endif ?>
@@ -23,7 +26,7 @@ $events = Event::getEventsForUser($user->id);
             <div class="post__header">
                 <div class="post__headerText">
                     <h3>
-                        <?= $event->hasDivision()->name ?>
+                        <?= htmlspecialchars($division?->name ?? '—', ENT_QUOTES, 'UTF-8') ?>
                         <span class="post__headerSpecial"><?= Formater::formatDateLikeXDaysAgo($event->created_at) ?></span>
                     </h3>
                 </div>
